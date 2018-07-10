@@ -5,27 +5,67 @@ import './index.css'
 
 class App extends Component {
 	state = {
-		expression: ''
+		display: '0',
+		store: ''
 	}
 
 	// component methods
-	updateScreen = (value) => {
+
+	// changes display when number buttons are pressed
+	updateScreenWithNumber = (value) =>
 		this.setState(prevState => {
-			const { expression } = prevState
-			return { expression: expression + value }
+			const { display, store } = prevState
+			return (
+				// allows display to show 0 initially
+				// and clear the 0 once numbers are entered
+				display === '0'
+					?  {
+							display: value, 
+							store: store+value
+					}
+					:  {
+							display: display + value,
+							store: store + value
+					}
+			)
 		})
+
+	// keeps a running string of all entered values
+	// and operators to be evaluated
+	updateStore = (value) => {
+		this.setState(prevState => {
+			const { store } = prevState
+			return { store: store + value }
+		})
+		this.updateScreenWithOperator(value)
 	}
 
+	// clears digits from screen when an operator is pressed
+	updateScreenWithOperator = (value) => 
+		this.setState({ display: '' })
+
+	// get values from buttons and call 
+	// functions to pass them to state
 	handleChange = (e) => {
-		// get values from buttons and pass them to state
-		e.target.value === 'c'
-			? this.setState({ expression: '' })
-			: this.updateScreen(e.target.value)
+		const btn = e.target.value
+		switch (btn) {
+			case 'c':
+				this.setState({
+					display: '' ,
+					store: ''
+				})
+				break
+			case '+':
+		 		this.updateStore(btn)
+		 		break
+		  	default:
+		    	this.updateScreenWithNumber(btn)
+		}
 	}
 
-	calculate = (expression) => 
-		// evaluate the expression on screen
-		this.setState({ expression: math.eval(expression) })
+	calculate = (display, store) => 
+		// evaluate the display on screen
+		this.setState({ display: math.eval(store) })
 
 	onSubmit = (e) =>
 		// prevent page reload
@@ -35,7 +75,8 @@ class App extends Component {
 		return (
 			<div className="app">
 				<Calculator 
-					expression={this.state.expression} 
+					display={this.state.display}
+					store={this.state.store} 
 					handleChange={this.handleChange}
 					calculate={this.calculate}
 					onSubmit={this.onSubmit}
