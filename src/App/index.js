@@ -11,13 +11,13 @@ class App extends Component {
 
 	// component methods
 
-	// changes display when number buttons are pressed
-	updateScreenWithNumber = (value) =>
+	updateScreenWithNumber = value =>
+		// changes display when number buttons are pressed
 		this.setState(prevState => {
 			const { display, store } = prevState
 			return (
 				// allows display to show 0 initially
-				// and clear the 0 once numbers are entered
+				// and clears the 0 once numbers are entered
 				display === '0'
 					?  {
 							display: value, 
@@ -30,23 +30,21 @@ class App extends Component {
 			)
 		})
 
-	// keeps a running string of all entered values
-	// and operators to be evaluated
-	updateStore = (value) => {
+	updateStore = value => {
+		// updates a running string of all entered values
+		// and operators to be evaluated when an 
+		// operator button is pressed
 		this.setState(prevState => {
 			const { store } = prevState
 			return { store: store + value }
 		})
-		this.updateScreenWithOperator(value)
+		// clears digits from screen when an operator is pressed
+		this.setState({ display: '' })
 	}
 
-	// clears digits from screen when an operator is pressed
-	updateScreenWithOperator = (value) => 
-		this.setState({ display: '' })
-
-	// get values from buttons and call 
-	// functions to pass them to state
-	handleChange = (e) => {
+	handleChange = e => {
+		// gets values from buttons and calls 
+		// functions to pass the values to state
 		const btn = e.target.value
 		switch (btn) {
 			case 'c':
@@ -56,6 +54,7 @@ class App extends Component {
 				})
 				break
 			case '+':
+			case '-':
 		 		this.updateStore(btn)
 		 		break
 		  	default:
@@ -64,11 +63,11 @@ class App extends Component {
 	}
 
 	calculate = (display, store) => 
-		// evaluate the display on screen
+		// evaluates the store and shows it in display
 		this.setState({ display: math.eval(store) })
 
-	onSubmit = (e) =>
-		// prevent page reload
+	onSubmit = e =>
+		// prevents page reload
 		e.preventDefault()
 
 	render() {
