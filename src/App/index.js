@@ -6,68 +6,65 @@ import './index.css'
 class App extends Component {
 	state = {
 		display: '0',
-		store: ''
+		store: '',
+		runningTotal: ''
 	}
 
 	// component methods
-
-	updateScreenWithNumber = value =>
-		// changes display when number buttons are pressed
+	updateScreenWithNumber = value => 
 		this.setState(prevState => {
-			const { display, store } = prevState
-			return (
-				// allows display to show 0 initially
-				// and clears the 0 once numbers are entered
-				display === '0'
-					?  {
-							display: value, 
-							store: store+value
-					}
-					:  {
-							display: display + value,
-							store: store + value
-					}
-			)
+			const { runningTotal } = prevState // ''
+			return {
+				display: value,
+				runningTotal: runningTotal + value
+			}
 		})
 
-	updateStore = value => {
-		// updates a running string of all entered values
-		// and operators to be evaluated when an 
-		// operator button is pressed
+	updateMemory = value => 
 		this.setState(prevState => {
-			const { store } = prevState
-			return { store: store + value }
+			const { store, display, runningTotal } = prevState 
+			return {
+				display: runningTotal,
+				store: store + display + value,
+				runningTotal: runningTotal + value
+			}
 		})
-		// clears digits from screen when an operator is pressed
-		this.setState({ display: '' })
-	}
-
+		
 	handleChange = e => {
-		// gets values from buttons and calls 
-		// functions to pass the values to state
 		const btn = e.target.value
 		switch (btn) {
 			case 'c':
 				this.setState({
 					display: '' ,
-					store: ''
+					store: '',
+					runningTotal: ''
 				})
 				break
 			case '+':
 			case '-':
-		 		this.updateStore(btn)
+				this.calcRunningTotal()
+		 		this.updateMemory(btn)
 		 		break
 		  	default:
 		    	this.updateScreenWithNumber(btn)
 		}
 	}
 
-	calculate = (display, store) => 
-		// evaluates the store and shows it in display
-		this.setState({ display: math.eval(store) })
-
+	calcRunningTotal = () => {
+		const total = math.eval(this.state.runningTotal).toString()
+		this.setState({ runningTotal: total })
+	}
+		
+	calculate = () => {
+		const total = math.eval(this.state.runningTotal).toString()
+		this.setState({
+			display: total,
+			store: '',
+			runningTotal: total
+		})
+	}
+		
 	onSubmit = e =>
-		// prevents page reload
 		e.preventDefault()
 
 	render() {
@@ -75,7 +72,8 @@ class App extends Component {
 			<div className="app">
 				<Calculator 
 					display={this.state.display}
-					store={this.state.store} 
+					store={this.state.store}
+					runningTotal={this.runningTotal} 
 					handleChange={this.handleChange}
 					calculate={this.calculate}
 					onSubmit={this.onSubmit}
