@@ -5,6 +5,7 @@ const Calculator = ({ expression, handleChange, calculate, onSubmit }) =>
 	<form onSubmit={onSubmit}>
 		{/* displays value of button presses */}
 		<input
+			className="display"
 			type="text"
 			placeholder="0"
 			value={expression}
