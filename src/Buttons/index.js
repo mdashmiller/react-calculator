@@ -27,6 +27,9 @@ const ButtonPanel = ({ handleChange }) =>
 			<input type="button" value="." onClick={handleChange} />
 			<input type="button" value="+" onClick={handleChange} />
 		</div>
+		<div>
+			<input type="button" value="ce" onClick={handleChange} />
+		</div>
 	</div>	
 
 export default ButtonPanel

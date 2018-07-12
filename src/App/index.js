@@ -13,7 +13,7 @@ class App extends Component {
 	// component methods
 	updateScreenWithNumber = value => 
 		this.setState(prevState => {
-			const { runningTotal } = prevState // ''
+			const { runningTotal } = prevState 
 			return {
 				display: value,
 				runningTotal: runningTotal + value
@@ -22,7 +22,7 @@ class App extends Component {
 
 	updateMemory = value => 
 		this.setState(prevState => {
-			const { store, display, runningTotal } = prevState 
+			const { display, store, runningTotal } = prevState 
 			return {
 				display: runningTotal,
 				store: store + display + value,
@@ -40,8 +40,18 @@ class App extends Component {
 					runningTotal: ''
 				})
 				break
+			case 'ce':
+				const newRunningTotal = this.removeLast() 
+				this.setState({
+					display: '0' ,
+					runningTotal: newRunningTotal
+				})
+				console.log(this.state.runningTotal)
+				break
 			case '+':
 			case '-':
+			case '*':
+			case '/':
 				this.calcRunningTotal()
 		 		this.updateMemory(btn)
 		 		break
@@ -50,8 +60,24 @@ class App extends Component {
 		}
 	}
 
+	removeLast = () => {
+		const rtArray = [...this.state.runningTotal] 
+		const rtLength = rtArray.length 
+		const lastItem = rtArray[rtLength - 1]
+			switch (lastItem) {
+				case '+':
+				case '-':
+				case '*':
+				case '/':
+					return rtArray.join('')
+				default:
+					return rtArray.filter((item, index) =>
+						index !== rtLength -1).join('')	
+			}
+	}
+
 	calcRunningTotal = () => {
-		const total = math.eval(this.state.runningTotal).toString()
+		const total = math.eval(this.state.runningTotal).toString() 
 		this.setState({ runningTotal: total })
 	}
 		
