@@ -67,7 +67,7 @@ class App extends Component {
 		}
 	}
 
-	updateMemory = value => {
+	updateMemory = operator => {
 		// handles the input of operators to runningTotal
 		// and store and updates display accordingly
 		const rtArray = [...this.state.runningTotal]
@@ -84,11 +84,11 @@ class App extends Component {
 				// replace it with the new operator
 				const newRunningTotalArr = rtArray.filter((item, index) => 
 					index !== rtLength - 1)
-				newRunningTotalArr.push(value)
+				newRunningTotalArr.push(operator)
 				const newRunningTotal = newRunningTotalArr.join('')
 				const newStoreArr = storeArr.filter((item, index) => 
 					index !== storeLength - 1)
-				newStoreArr.push(value)
+				newStoreArr.push(operator)
 				const newStore = newStoreArr.join('')
 				this.setState({
 					runningTotal : newRunningTotal,
@@ -106,9 +106,9 @@ class App extends Component {
 						runningTotal
 					} = prevState
 					return {
-						store: store + display + value,
+						store: store + display + operator,
 						display: runningTotal,
-						runningTotal: runningTotal + value
+						runningTotal: runningTotal + operator
 					}
 				})
 		}
@@ -116,7 +116,7 @@ class App extends Component {
 
 	calcRunningTotal = () => {
 		// each time a new operator is entered
-		// running total is evaluated
+		// after a number runningTotal is evaluated
 		const total = math.eval(this.state.runningTotal).toString()
 		this.setState({ runningTotal: total })
 	}
