@@ -303,7 +303,6 @@ class App extends Component {
 				<Calculator 
 					display={this.state.display}
 					store={this.state.store}
-					runningTotal={this.runningTotal} 
 					handleChange={this.handleChange}
 					calculate={this.calculate}
 					onSubmit={this.onSubmit}
