@@ -222,38 +222,44 @@ class App extends Component {
 			// been entered and the '.' is pressed, retain the leading 
 			// zero in display and append the '.' to runningTotal
 			if (char === '.') {
-				this.setState(prevState => {
-					const { runningTotal } = prevState
-					return {
-						display: '0.',
-						runningTotal: runningTotal + char
-					}
-				})
+				this.leadingZero()
 			} else {
 				// if last character entered was an operator or nothing has yet
 				// been entered and anything other than '.' is pressed,
 				// replace previous number in display with the new char
 				// and concatenate the new char to runningTotal
-				this.setState(prevState => {
-					const { runningTotal } = prevState
-					return {
-						display: char,
-						runningTotal: runningTotal + char
-					}
-				})
+				this.updateDisplay(char)
 			}	
 		} else {
 			// if last character entered was a number
 			// continue adding chars to the number
 			// both in runningTotal and display
-			this.setState(prevState => {
-				const { display, runningTotal } = prevState
-				return {
-					display: display + char,
-					runningTotal: runningTotal + char
-				}
-			})
+			this.concatChar(char)			
 		}
+	}
+
+	updateDisplay = char => {
+		// swaps current display with the char that
+		// was entered and updates runningTotal
+		this.setState(prevState => {
+			const { runningTotal } = prevState
+			return {
+				display: char,
+				runningTotal: runningTotal + char
+			}
+		})
+	}
+
+	concatChar = char => {
+		// concatenates the char that was entered 
+		// to display and runningTotal
+		this.setState(prevState => {
+			const { display, runningTotal } = prevState
+			return {
+				display: display + char,
+				runningTotal: runningTotal + char
+			}
+		})
 	}
 
 	calculate = () => {
