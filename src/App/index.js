@@ -272,7 +272,7 @@ class App extends Component {
 			runningTotal: total
 		})
 	}
-		
+	
 	onSubmit = e =>
 		// prevents page reloading
 		e.preventDefault()
