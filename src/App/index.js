@@ -8,7 +8,8 @@ class App extends Component {
 		display: '0',
 		store: '',
 		runningTotal: '0',
-		ops: ['+', '-', '*', '/']
+		ops: ['+', '-', '*', '/'],
+		calculateCalled: false
 	}
 
 	// component methods
@@ -31,10 +32,14 @@ class App extends Component {
 				this.updateWithOperator(btn)
 		 		break
 		 	case '.':
-		 		this.handleDecimal()
+		 		this.state.calculateCalled
+		 			? this.refresh('0.')
+		 			: this.handleDecimal()
 		 		break
 		  	default:
-		    	this.updateWithChar(btn)
+		  		this.state.calculateCalled
+		  			? this.refresh(btn)
+		    		: this.updateWithChar(btn)
 		}
 	}
 
@@ -43,7 +48,8 @@ class App extends Component {
 		this.setState({
 			display: '0' ,
 			store: '',
-			runningTotal: '0'
+			runningTotal: '0',
+			calculateCalled: false
 		})
 	}
 
@@ -54,7 +60,8 @@ class App extends Component {
 			const newRunningTotal = this.removeLastNumber() 
 			this.setState({
 				display: '0' ,
-				runningTotal: newRunningTotal
+				runningTotal: newRunningTotal,
+				calculateCalled: false
 			})
 		}
 	}
@@ -96,6 +103,7 @@ class App extends Component {
 	updateWithOperator = operator => {
 		// handles the input of operators to runningTotal
 		// and store and updates display accordingly
+		this.setState({ calculateCalled: false })
 		const lastChar = this.lastCharEntered()
 		
 		switch (lastChar) {
@@ -269,7 +277,18 @@ class App extends Component {
 		this.setState({
 			display: total,
 			store: '',
-			runningTotal: total
+			runningTotal: total,
+			calculateCalled: true
+		})
+	}
+
+	refresh = char => {
+		// begins a new calculation chain when a number
+		// or decimal is entered after calculate() has been called
+		this.setState({
+			display: char,
+			runningTotal: char,
+			calculateCalled: false
 		})
 	}
 	
