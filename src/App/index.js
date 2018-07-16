@@ -9,7 +9,8 @@ class App extends Component {
 		store: '',
 		runningTotal: '0',
 		ops: ['+', '-', '*', '/'],
-		calculateCalled: false
+		calculateCalled: false,
+		isNegative: false
 	}
 
 	// component methods
@@ -35,6 +36,9 @@ class App extends Component {
 		 		this.state.calculateCalled
 		 			? this.refresh('0.')
 		 			: this.handleDecimal()
+		 		break
+		 	case '+/-':
+		 		this.plusMinus()
 		 		break
 		  	default:
 		  		this.state.calculateCalled
@@ -221,6 +225,86 @@ class App extends Component {
 		})
 	}
 
+
+	plusMinus = () => {
+		return
+		/*
+		const rtArray = [...this.state.runningTotal]
+		const lastOp = this.lastOperatorEntered()
+		console.log(lastOp)
+		const lastOpIndex = rtArray.lastIndexOf(lastOp)
+		if (this.state.runningTotal === '0') {
+			return
+		}
+		switch (lastOp) {
+			case undefined:
+				this.setState(prevState => {
+					const { display, runningTotal, isNegative } = prevState
+					if (isNegative) {
+						const newDisplay = display.replace('-', '')
+						return {
+							display: newDisplay,
+							runningTotal: '-' + runningTotal,
+							isNegative: !isNegative
+						}
+					} else {
+						return {
+							display: '-' + display,
+							runningTotal: '-' + runningTotal,
+							isNegative: !isNegative
+						}
+					}
+				})
+				break
+			case '-':
+				this.setState(prevState => {
+					const { display, isNegative } = prevState
+					if (isNegative) {
+						const newDisplay = display.replace('-', '')
+						rtArray.splice(lastOpIndex, 1, '+')
+						return {
+							display: newDisplay,
+							runningTotal: rtArray.join(''),
+							isNegative: !isNegative
+						}
+					} else {
+						rtArray.splice(lastOpIndex, 1, '-')
+						return {
+							display: '-' + display,
+							runningTotal: rtArray.join(''),
+							isNegative: !isNegative
+						}
+					}
+				})
+				break
+			case '+':
+				this.setState(prevState => {
+					const { display, isNegative } = prevState
+					if (isNegative) {
+						const newDisplay = display.replace('-', '')
+						rtArray.splice(lastOpIndex, 1, '+')
+						return {
+							display: newDisplay,
+							runningTotal: rtArray.join(''),
+							isNegative: !isNegative
+						}
+					} else {
+						rtArray.splice(lastOpIndex, 1, '-')
+						return {
+							display: '-' + display,
+							runningTotal: rtArray.join(''),
+							isNegative: !isNegative
+						}
+					}
+				})
+				break
+			default:
+				return
+		}
+	*/
+	}
+
+
 	updateWithChar = char => {
 		// determines how to add new characters
 		// to display and runningTotal
@@ -270,9 +354,19 @@ class App extends Component {
 		})
 	}
 
+	noDoubleOps = () => {
+		const dblNeg = /--/g
+		const plusNeg = /\+-/g
+		let newRt = this.state.runningTotal.replace(dblNeg, '+')
+		newRt = newRt.replace(plusNeg, '-')
+		this.setState({ runningTotal: newRt })
+		console.log(`double ops eleminated ${this.state.runningTotal}`)
+	}
+
 	calculate = () => {
 		// evaluates runningTotal, sets the resulting value to display
 		// and clears the store when '=' button is pressed
+		this.noDoubleOps()
 		const total = math.eval(this.state.runningTotal).toString()
 		this.setState({
 			display: total,
@@ -298,6 +392,7 @@ class App extends Component {
 
 	render() {
 		console.log(`runningTotal is ${this.state.runningTotal} and type ${typeof this.state.runningTotal}`)
+		console.log(this.state.isNegative) 
 		return (
 			<div className="app">
 				<Calculator 
