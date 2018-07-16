@@ -5,7 +5,6 @@ import './index.css'
 const Calculator = ({
 	display, 
 	store, 
-	runningTotal,
 	handleChange, 
 	calculate, 
 	onSubmit 
