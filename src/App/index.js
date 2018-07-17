@@ -157,7 +157,7 @@ class App extends Component {
 	calcRunningTotal = () => {
 		// each time an operator is entered after a number 
 		// runningTotal is evaluated
-		const total = math.eval(this.state.runningTotal).toString()
+		const total = math.eval(this.state.runningTotal).toFixed(4)
 		this.setState({ runningTotal: total })
 	}
 
@@ -354,6 +354,7 @@ class App extends Component {
 		})
 	}
 
+	/*
 	noDoubleOps = () => {
 		const dblNeg = /--/g
 		const plusNeg = /\+-/g
@@ -362,12 +363,13 @@ class App extends Component {
 		this.setState({ runningTotal: newRt })
 		console.log(`double ops eleminated ${this.state.runningTotal}`)
 	}
+	*/
 
 	calculate = () => {
 		// evaluates runningTotal, sets the resulting value to display
 		// and clears the store when '=' button is pressed
-		this.noDoubleOps()
-		const total = math.eval(this.state.runningTotal).toString()
+		//this.noDoubleOps()
+		const total = math.eval(this.state.runningTotal).toFixed(4)
 		this.setState({
 			display: total,
 			store: '',
