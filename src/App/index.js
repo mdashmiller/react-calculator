@@ -157,11 +157,18 @@ class App extends Component {
 	calcRunningTotal = () => {
 		// each time an operator is entered after a number 
 		// runningTotal is evaluated
+		/*
 		const total = math.eval(this.state.runningTotal).toFixed(4)
+		this.setState({ runningTotal: total })
+		*/
+		let total = math.eval(this.state.runningTotal).toString()
+		if (total.includes('.') && (total.length - total.indexOf('.')) > 5) {
+			total = parseFloat(total).toFixed(4)
+		}
 		this.setState({ runningTotal: total })
 	}
 
-	chainOperations = (operator) => {
+	chainOperations = operator => {
 		// allows user to chain multiple calculations
 		// and updates store, display and runningTotal appropriately
 		this.setState(prevState => {
@@ -304,7 +311,6 @@ class App extends Component {
 	*/
 	}
 
-
 	updateWithChar = char => {
 		// determines how to add new characters
 		// to display and runningTotal
@@ -377,6 +383,7 @@ class App extends Component {
 			calculateCalled: true
 		})
 	}
+l
 
 	refresh = char => {
 		// begins a new calculation chain when a number
