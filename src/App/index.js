@@ -204,23 +204,46 @@ class App extends Component {
 				runningTotal//-1
 			} = prevState
 
-			const tempStore = store + display + operator//1+-2+
-			const newStore = this.noDoubleOps(tempStore)//1-2+
+			//const tempStore = store + display + operator
+			//const newStore = this.addParens(tempStore)
 
 			return {
-				store: newStore,//1-2+
+				//store: newStore,
+				store: store + display + operator,
 				display: runningTotal,//-1
 				runningTotal: runningTotal + operator//-1+
 			}
 		})
 	}
 
-	noDoubleOps = (store) => {//1+-2+
+	/*
+	addParens = tempStore => {
 		const dblNeg = /--/g
 		const plusNeg = /\+-/g
-		let newStore = store.replace(dblNeg, '+')
-		return newStore = newStore.replace(plusNeg, '-')//1-2+
+		let openParens = tempStore.replace(dblNeg, '-(-')
+		openParens = openParens.replace(plusNeg, '+(-')
+		return this.closeParens(openParens)
 	}
+
+	closeParens = string => {
+		const array = [...string]
+
+		const closeParenLocations = []
+		let numNewItems = 0
+		array.forEach((item, index) => {
+			if (item === '(') {
+				closeParenLocations.push(index + 3 + numNewItems)
+				numNewItems++
+			}
+		})
+
+		closeParenLocations.forEach(item =>
+			array.splice(item, 0, ')')
+		)
+
+		return array.join('')
+	}
+	*/
 
 	handleDecimal = () => {
 		// determines when to add decimals to
@@ -305,19 +328,21 @@ class App extends Component {
 
 
 	plusMinus = () => {
-		this.setState({ negate: false })
-		const rtArray = [...this.state.runningTotal]//[-,1,1,+,(,-,1,1,)]
-		const lastOp = this.lastOperatorEntered()//-
-		const lastOpIndex = rtArray.lastIndexOf(lastOp)//5
+		//this.setState({ negate: false })
+		//const rtArray = [...this.state.runningTotal]//[-,1,1,+,(,-,1,1,)]
+		//const lastOp = this.lastOperatorEntered()//-
+		//const lastOpIndex = rtArray.lastIndexOf(lastOp)//5
 		const lastChar = this.lastCharEntered()//)
-		const storeOps = this.getOperators(this.state.store)//[-,-,+,-]
+		//const storeOps = this.getOperators(this.state.store)//[-,-,+,-]
 		
 		if (this.state.runningTotal === '0' || this.state.ops.includes(lastChar)) {
 			// if nothing has yet been entered return
 			return
+		} else {
+			this.negateNum()
 		}
 
-
+		/*
 		if (storeOps.length > 1 && this.state.ops.includes(lastChar)) {
 			this.negateNum()
 			return	
@@ -435,14 +460,14 @@ class App extends Component {
 							isNegative: !isNegative
 						}
 					} else {
-						/*if (!this.state.negate) {*/ 
+						if (!this.state.negate) { 
 							rtArray.splice(lastOpIndex, 1, '-')//[7,-,5]
 							return {
 								display: '-' + display,//-5
 								runningTotal: rtArray.join(''),//7-5
 								isNegative: !isNegative,
 							}
-						//}
+						}
 						
 					}
 				})
@@ -450,26 +475,29 @@ class App extends Component {
 			default:
 				return
 		}
+		*/
 	}
+	
 
 	negateNum = () => {
 		this.setState(prevState => {
 			const { store, display, isNegative} = prevState
+			//const rtArray = [...runningTotal]
+			//const lastOp = this.lastOperatorEntered()
+			//const lastOpIndex = rtArray.lastIndexOf(lastOp)
 			if (isNegative) {
+				const posDisplay = display.replace('-', '')
 				return {
-					store: store + (display.replace('-', '')),
-					display: display.replace('-', ''),
-					runningTotal: '00',
-					isNegative: !isNegative,
-					negate: true
+					display: posDisplay,
+					runningTotal: `${store}${posDisplay}`,
+					isNegative: !isNegative
+					//negate: true
 				}
 			} else {
 				return {
-					store: store + `(-${display})`,
-					display: '-' + display,						
-					runningTotal: '00',
-					isNegative: !isNegative,
-					negate: true
+					display: '-' + display,
+					runningTotal: `${store}-${display}`,
+					isNegative: !isNegative
 				}
 			}
 		})
