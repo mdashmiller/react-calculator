@@ -117,7 +117,7 @@ class App extends Component {
 		// return getOperators(field).pop()
 	}
 
-	updateWithOperator = operator => {
+	updateWithOperator = operator => {//+
 		// handles the input of operators to runningTotal
 		// and store and updates display accordingly
 		this.setState({ calculateCalled: false })
@@ -306,14 +306,13 @@ class App extends Component {
 
 	plusMinus = () => {
 		this.setState({ negate: false })
-		const rtArray = [...this.state.runningTotal]//[0,0]
-		const lastOp = this.lastOperatorEntered()//u
-		const lastOpIndex = rtArray.lastIndexOf(lastOp)//u
-		const lastChar = this.lastCharEntered()//0
-		const storeOps = this.getOperators(this.state.store)//[-,-,+]
-		console.log(storeOps)
+		const rtArray = [...this.state.runningTotal]//[-,1,1,+,(,-,1,1,)]
+		const lastOp = this.lastOperatorEntered()//-
+		const lastOpIndex = rtArray.lastIndexOf(lastOp)//5
+		const lastChar = this.lastCharEntered()//)
+		const storeOps = this.getOperators(this.state.store)//[-,-,+,-]
 		
-		if (this.state.runningTotal === '0') {
+		if (this.state.runningTotal === '0' || this.state.ops.includes(lastChar)) {
 			// if nothing has yet been entered return
 			return
 		}
@@ -359,8 +358,17 @@ class App extends Component {
 						}
 					} else {
 						if (runningTotal === '00') {
+							const storeArray = [...this.state.store]
+							const storeLastOp = storeOps.pop()
+							const storeLastOpIndex = storeArray.lastIndexOf(storeLastOp) 
+							const prunedStore = storeArray.filter((item, index) =>
+								index <= storeLastOpIndex
+							).join('')
 							return {
-								
+								store: prunedStore + `(-${display})`,
+								display: '-' + display,
+								runningTotal: `-${display}+(-${display})`,
+								isNegative: !isNegative
 							}
 						} else {
 							return {
@@ -376,14 +384,34 @@ class App extends Component {
 				// when the last term is negative
 				// make it positive
 				this.setState(prevState => {
-					const { display, isNegative } = prevState
+					const { store, display, isNegative } = prevState
 					if (isNegative) {
-						const newDisplay = display.replace('-', '')//1
-						rtArray.splice(lastOpIndex, 1, '+')//[+,0,1]
-						return {
-							display: newDisplay,//1
-							runningTotal: rtArray.join(''),//+01
-							isNegative: !isNegative
+						const newDisplay = display.replace('-', '')//11
+						rtArray.splice(lastOpIndex, 1, '+')//[-,1,1,+,(,+,1,1,)]
+						if (lastChar === ')') {
+							const storeArray = [...store]
+							const storeLastOp = storeOps.pop()
+							const storeLastOpIndex = storeArray.lastIndexOf(storeLastOp)
+							const prunedStore = storeArray.filter((item, index) =>
+								index !== storeLastOpIndex
+							).join('') 
+							const lParen = /\(/
+							const rParen = /\)/
+							let newStore = prunedStore.replace(lParen, '')
+							newStore = newStore.replace(rParen, '')
+							return {
+								store: newStore,
+								display: newDisplay,
+								runningTotal: '00',
+								isNegative: !isNegative,
+								negate: true
+							}
+						} else {
+							return {
+								display: newDisplay,//11
+								runningTotal: rtArray.join(''),//-11++11
+								isNegative: !isNegative//f
+							}
 						}
 					} else {
 						rtArray.splice(lastOpIndex, 1, '+')//[1,-,2]
@@ -436,7 +464,6 @@ class App extends Component {
 					negate: true
 				}
 			} else {
-				console.log('in there!')
 				return {
 					store: store + `(-${display})`,
 					display: '-' + display,						
@@ -446,8 +473,6 @@ class App extends Component {
 				}
 			}
 		})
-			console.log(`store: ${this.state.store} display: ${this.state.display} runningTotal: ${this.state.runningTotal}
-			isNegative ${this.state.isNegative} negate: ${this.state.negate}`)	
 	}
 
 	updateWithChar = char => {
@@ -504,9 +529,17 @@ class App extends Component {
 		// evaluates runningTotal, sets the resulting value to display
 		// and clears the store when '=' button is pressed
 		//this.noDoubleOps()
-		this.setState({ negate: false })
-		let total = math.eval(this.state.runningTotal).toString()
-		//let negativeState
+		//this.setState({ negate: false })
+		let total
+		const lastChar = this.lastCharEntered()
+
+		if (this.state.ops.includes(lastChar)) {
+			total = math.eval(this.state.runningTotal + this.state.display).toString()
+		} else {
+			total = math.eval(this.state.runningTotal).toString()
+			//let negativeState
+		}
+		
 		if (total.includes('.') && (total.length - total.indexOf('.')) > 5) {
 			total = parseFloat(total).toFixed(4)
 		}
@@ -525,11 +558,6 @@ class App extends Component {
 			calculateCalled: true,
 			isNegative: negativeState
 		})
-	}
-
-	determineNegative = total => {
-		return 
-			
 	}
 
 	refresh = char => {
