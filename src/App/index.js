@@ -121,6 +121,7 @@ class App extends Component {
 		// handles the input of operators to runningTotal
 		// and store and updates display accordingly
 		this.setState({ calculateCalled: false })
+		/*
 		if (this.state.negate) {
 			this.setState(prevState => {
 				const { store } = prevState
@@ -133,7 +134,8 @@ class App extends Component {
 				}
 			})
 		} else {
-			const lastChar = this.lastCharEntered()//2
+		*/
+			const lastChar = this.lastCharEntered()//0
 			
 			switch (lastChar) {
 				case '+':
@@ -150,7 +152,7 @@ class App extends Component {
 					this.calcRunningTotal()//-1
 					this.chainOperations(operator)
 			}
-		}	
+		//}	
 	}
 
 	swapLastOperator = (operator) => {
@@ -183,14 +185,14 @@ class App extends Component {
 	calcRunningTotal = () => {
 		// each time an operator is entered after a number 
 		// runningTotal is evaluated
-		let total = math.eval(this.state.runningTotal).toString()
+		let total = math.eval(this.state.runningTotal).toString()//1+-20 --> -19
 		if (total.includes('.') && (total.length - total.indexOf('.')) > 5) {
 			total = parseFloat(total).toFixed(4)
 		}
-		const negativeState = total.includes('-') ? true : false
+		const negativeState = total.includes('-') ? true : false//t
 		this.setState({
-			runningTotal: total,
-			isNegative: negativeState 
+			runningTotal: total,//-19
+			isNegative: negativeState//t
 		})
 	}
 
@@ -200,11 +202,11 @@ class App extends Component {
 		this.setState(prevState => {
 			const {
 				store,//1+
-				display,//-2
-				runningTotal//-1
+				display,//-20
+				runningTotal//-19
 			} = prevState
 
-			//const tempStore = store + display + operator
+			//const tempStore = store + display + operator//1+-20+
 			//const newStore = this.addParens(tempStore)
 
 			return {
@@ -216,23 +218,41 @@ class App extends Component {
 		})
 	}
 
-	/*
-	addParens = tempStore => {
+	addParens = tempStore => {//1+-20+
 		const dblNeg = /--/g
 		const plusNeg = /\+-/g
-		let openParens = tempStore.replace(dblNeg, '-(-')
-		openParens = openParens.replace(plusNeg, '+(-')
-		return this.closeParens(openParens)
+		const endParen = /\)/g
+		const baseString = tempStore.replace(endParen, '')//1+-20+
+		let openParens = baseString.replace(dblNeg, '-(-')//1+-20+
+		openParens = openParens.replace(plusNeg, '+(-')//1+(-20+
+		return this.handleCloseParens(openParens)
 	}
 
-	closeParens = string => {
+	handleCloseParens = string => {
+		const array = [...string]
+		const beginCheckLocations = []
+
+		array.forEach((item, index) => {
+			if (item === '(') {
+				beginCheckLocations.push(index + 3)
+			}						 
+		})
+
+		let checkStr
+
+		for (let i = 0; i < beginCheckLocations.length; i++) {
+			checkStr = string.substring(beginCheckLocations[i], beginCheckLocations[i + 1])
+			this.findCloseParenLocation(checkStr)
+		}
+
+		/*
 		const array = [...string]
 
 		const closeParenLocations = []
 		let numNewItems = 0
 		array.forEach((item, index) => {
 			if (item === '(') {
-				closeParenLocations.push(index + 3 + numNewItems)
+				closeParenLocations.push(index + 3 + numNewItems)//[]
 				numNewItems++
 			}
 		})
@@ -242,8 +262,24 @@ class App extends Component {
 		)
 
 		return array.join('')
+		*/
 	}
-	*/
+
+	//for each char in substring, if ops.icludes(char) then return char index
+	findCloseParenLocation = string => {
+		for (let i = 0; i < string.length; i++) {
+			if (this.state.ops.includes(string[i])) {
+				return this.insertClosingParens(string, string.indexOf(string[i]))
+			} else {
+				return this.insertClosingParens(string.length)
+			}
+		}
+	}
+
+	insertClosingParens = (string, position) => {
+		const array = [...string]
+		return array.splice(position, 0, ')').join
+	}
 
 	handleDecimal = () => {
 		// determines when to add decimals to
