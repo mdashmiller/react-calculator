@@ -29,6 +29,7 @@ const ButtonPanel = ({ handleChange }) =>
 		</div>
 		<div>
 			<input type="button" value="ce" onClick={handleChange} />
+			<input type="button" value="+/-" onClick={handleChange} />
 		</div>
 	</div>	
 
