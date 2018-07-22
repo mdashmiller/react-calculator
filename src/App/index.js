@@ -10,8 +10,7 @@ class App extends Component {
 		runningTotal: '0',
 		ops: ['+', '-', '*', '/'],
 		calculateCalled: false,
-		isNegative: false,
-		negate: false
+		isNegative: false
 	}
 
 	// component methods
@@ -117,42 +116,28 @@ class App extends Component {
 		// return getOperators(field).pop()
 	}
 
-	updateWithOperator = operator => {//+
+	updateWithOperator = operator => {
 		// handles the input of operators to runningTotal
 		// and store and updates display accordingly
 		this.setState({ calculateCalled: false })
-		/*
-		if (this.state.negate) {
-			this.setState(prevState => {
-				const { store } = prevState
-				return {
-					store: store + operator,
-					display: '0',
-					runningTotal: '0' + operator,
-					isNegative: false,
-					negate: false
-				}
-			})
-		} else {
-		*/
-			const lastChar = this.lastCharEntered()//0
-			
-			switch (lastChar) {
-				case '+':
-				case '-':
-				case '*':
-				case '/':
-					// if the last character entered was an operator then
-					// replace it with the new operator
-					this.swapLastOperator(operator)
-					break
-				default:
-					// if the last character entered was a number then
-					// append the operator to runningTotal and store
-					this.calcRunningTotal()//-1
-					this.chainOperations(operator)
-			}
-		//}	
+
+		const lastChar = this.lastCharEntered()
+
+		switch (lastChar) {
+			case '+':
+			case '-':
+			case '*':
+			case '/':
+				// if the last character entered was an operator then
+				// replace it with the new operator
+				this.swapLastOperator(operator)
+				break
+			default:
+				// if the last character entered was a number then
+				// append the operator to runningTotal and store
+				this.calcRunningTotal()
+				this.chainOperations(operator)
+		}
 	}
 
 	swapLastOperator = (operator) => {
@@ -185,14 +170,14 @@ class App extends Component {
 	calcRunningTotal = () => {
 		// each time an operator is entered after a number 
 		// runningTotal is evaluated
-		let total = math.eval(this.state.runningTotal).toString()//1+-20 --> -19
+		let total = math.eval(this.state.runningTotal).toString()
 		if (total.includes('.') && (total.length - total.indexOf('.')) > 5) {
 			total = parseFloat(total).toFixed(4)
 		}
-		const negativeState = total.includes('-') ? true : false//t
+		const negativeState = total.includes('-') ? true : false
 		this.setState({
-			runningTotal: total,//-19
-			isNegative: negativeState//t
+			runningTotal: total,
+			isNegative: negativeState
 		})
 	}
 
@@ -201,84 +186,108 @@ class App extends Component {
 		// and updates store, display and runningTotal appropriately
 		this.setState(prevState => {
 			const {
-				store,//1+
-				display,//-20
-				runningTotal//-19
+				store,
+				display,
+				runningTotal
 			} = prevState
 
-			//const tempStore = store + display + operator//1+-20+
-			//const newStore = this.addParens(tempStore)
+			const tempStore = store + display + operator
+			let newStore
+
+			if (tempStore.indexOf('--') !== -1  
+				|| tempStore.indexOf('+-') !== -1 
+				|| tempStore.indexOf('*-') !== -1 
+				|| tempStore.indexOf('/-') !== -1) {
+				newStore = this.handleParens(tempStore)
+			} else {
+				newStore = tempStore
+			}
 
 			return {
-				//store: newStore,
-				store: store + display + operator,
-				display: runningTotal,//-1
-				runningTotal: runningTotal + operator//-1+
+				store: newStore,
+				display: runningTotal,
+				runningTotal: runningTotal + operator
 			}
 		})
 	}
 
-	addParens = tempStore => {//1+-20+
-		const dblNeg = /--/g
-		const plusNeg = /\+-/g
-		const endParen = /\)/g
-		const baseString = tempStore.replace(endParen, '')//1+-20+
-		let openParens = baseString.replace(dblNeg, '-(-')//1+-20+
-		openParens = openParens.replace(plusNeg, '+(-')//1+(-20+
-		return this.handleCloseParens(openParens)
-	}
-
-	handleCloseParens = string => {
-		const array = [...string]
+	handleParens = tempStore => {
+		const openParens = this.addOpenParens(tempStore)
+		
+		const openParensArr = [...openParens]
 		const beginCheckLocations = []
 
-		array.forEach((item, index) => {
+		openParensArr.forEach((item, index) => {
 			if (item === '(') {
 				beginCheckLocations.push(index + 3)
 			}						 
 		})
+		const storePrefix = this.createStorePrefix(beginCheckLocations, openParens)
+		return this.createCheckStrings(beginCheckLocations, openParens, storePrefix)
+	}
 
+	addOpenParens = tempStore => {
+		const dblNeg = /--/g
+		const plusNeg = /\+-/g
+		const timesNeg = /\*-/g
+		const divNeg = /\/-/g
+		const endParen = /\)/g
+		const baseString = tempStore.replace(endParen, '')
+		let openParens = baseString.replace(dblNeg, '-(-')
+		openParens = openParens.replace(plusNeg, '+(-')
+		openParens = openParens.replace(timesNeg, '*(-')
+		return openParens.replace(divNeg, '/(-')
+	}
+
+	createStorePrefix = (locations, tempStore) => {
+		const cutoff = locations[0]
+		const tempStoreArr = [...tempStore]
+		return tempStoreArr.filter((item, index) =>
+			index < cutoff												
+		).join('')
+	}
+
+	createCheckStrings = (locations, openParens, storePrefix) => {
 		let checkStr
+		const checkStrings = []
 
-		for (let i = 0; i < beginCheckLocations.length; i++) {
-			checkStr = string.substring(beginCheckLocations[i], beginCheckLocations[i + 1])
-			this.findCloseParenLocation(checkStr)
+		for (let i = 0; i < locations.length; i++) {
+			checkStr = openParens.substring(locations[i], locations[i + 1])
+			checkStrings.push(checkStr)
 		}
+		return this.findCloseParensLocs(checkStrings, locations, storePrefix)
+	}
 
-		/*
-		const array = [...string]
-
-		const closeParenLocations = []
-		let numNewItems = 0
-		array.forEach((item, index) => {
-			if (item === '(') {
-				closeParenLocations.push(index + 3 + numNewItems)//[]
-				numNewItems++
+	findCloseParensLocs = (checkStrings, locations, storePrefix) => {
+		const ops = ['+', '-', '*', '/']
+		const closeParensLocations = []
+		
+		checkStrings.forEach(substr => {
+			for (let i = 0; i < substr.length; i++) {
+				if (ops.includes(substr[i])) {
+					closeParensLocations.push(substr.indexOf(substr[i]))
+					return
+				}
 			}
 		})
-
-		closeParenLocations.forEach(item =>
-			array.splice(item, 0, ')')
-		)
-
-		return array.join('')
-		*/
+		return this.insertCloseParens(closeParensLocations, checkStrings, storePrefix)
 	}
 
-	//for each char in substring, if ops.icludes(char) then return char index
-	findCloseParenLocation = string => {
-		for (let i = 0; i < string.length; i++) {
-			if (this.state.ops.includes(string[i])) {
-				return this.insertClosingParens(string, string.indexOf(string[i]))
-			} else {
-				return this.insertClosingParens(string.length)
-			}
-		}
+	insertCloseParens = (locations, substrings, storePrefix) => {
+		let counter = 0
+		const newSubStrings = []
+		
+		substrings.forEach(substr => {
+			let substrArray = [...substr]
+			substrArray.splice(locations[counter], 0, ')')
+			counter++
+			newSubStrings.push(substrArray.join(''))
+		})
+		return this.createStoreWithParens(storePrefix, newSubStrings.join(''))
 	}
 
-	insertClosingParens = (string, position) => {
-		const array = [...string]
-		return array.splice(position, 0, ')').join
+	createStoreWithParens = (storePrefix, storeEnd) => {
+		return storePrefix + storeEnd
 	}
 
 	handleDecimal = () => {
@@ -296,15 +305,6 @@ class App extends Component {
 			).pop()
 			const revertRt = this.removeLastChar(newStore).join('')
 			const prevRunningTotal = math.eval(revertRt).toString()
-			/*
-			const lastOp = storeArray.filter(item => 
-				this.state.ops.includes(item)									 
-			).pop()
-			const lastOpIndex = storeArray.lastIndexOf(lastOp)
-			const newStore = storeArray.filter((item, index) => 
-				index <= lastOpIndex	
-			).join('')
-			*/
 
 			this.setState(prevState => {
 				return {
@@ -364,12 +364,7 @@ class App extends Component {
 
 
 	plusMinus = () => {
-		//this.setState({ negate: false })
-		//const rtArray = [...this.state.runningTotal]//[-,1,1,+,(,-,1,1,)]
-		//const lastOp = this.lastOperatorEntered()//-
-		//const lastOpIndex = rtArray.lastIndexOf(lastOp)//5
 		const lastChar = this.lastCharEntered()//)
-		//const storeOps = this.getOperators(this.state.store)//[-,-,+,-]
 		
 		if (this.state.runningTotal === '0' || this.state.ops.includes(lastChar)) {
 			// if nothing has yet been entered return
@@ -377,157 +372,18 @@ class App extends Component {
 		} else {
 			this.negateNum()
 		}
-
-		/*
-		if (storeOps.length > 1 && this.state.ops.includes(lastChar)) {
-			this.negateNum()
-			return	
-		}
-
-
-		switch (lastOp) {//+
-			case undefined:
-				// when there is a single positive term
-				// make it negative
-				this.setState(prevState => {
-					const { display, runningTotal, isNegative } = prevState
-					if (isNegative) {
-						const newDisplay = display.replace('-', '')
-						const storeArray = [...this.state.store]
-						const parenIndex = storeArray.indexOf('(')
-						const lastPrevOp = storeArray[parenIndex - 1]
-						const newStore = storeArray.filter((item, index) => 
-							index < parenIndex
-						).join('')
-						const revertRt = this.removeLastChar(newStore).join('')
-						const prevRunningTotal = math.eval(revertRt).toString()
-						if (runningTotal === '00') {
-							return {
-								store: newStore,
-								display: newDisplay,
-								runningTotal: prevRunningTotal + lastPrevOp,
-								isNegative: !isNegative
-							}
-						} else {
-							//2
-							const newRunningTotal = runningTotal.replace('-', '')//00
-							return {
-								display: newDisplay,//2
-								runningTotal: newRunningTotal,//00
-								isNegative: !isNegative//f
-							}
-						}
-					} else {
-						if (runningTotal === '00') {
-							const storeArray = [...this.state.store]
-							const storeLastOp = storeOps.pop()
-							const storeLastOpIndex = storeArray.lastIndexOf(storeLastOp) 
-							const prunedStore = storeArray.filter((item, index) =>
-								index <= storeLastOpIndex
-							).join('')
-							return {
-								store: prunedStore + `(-${display})`,
-								display: '-' + display,
-								runningTotal: `-${display}+(-${display})`,
-								isNegative: !isNegative
-							}
-						} else {
-							return {
-								display: '-' + display,
-								runningTotal: '-' + runningTotal,
-								isNegative: !isNegative
-							}
-						}
-					}
-				})
-				break
-			case '-':
-				// when the last term is negative
-				// make it positive
-				this.setState(prevState => {
-					const { store, display, isNegative } = prevState
-					if (isNegative) {
-						const newDisplay = display.replace('-', '')//11
-						rtArray.splice(lastOpIndex, 1, '+')//[-,1,1,+,(,+,1,1,)]
-						if (lastChar === ')') {
-							const storeArray = [...store]
-							const storeLastOp = storeOps.pop()
-							const storeLastOpIndex = storeArray.lastIndexOf(storeLastOp)
-							const prunedStore = storeArray.filter((item, index) =>
-								index !== storeLastOpIndex
-							).join('') 
-							const lParen = /\(/
-							const rParen = /\)/
-							let newStore = prunedStore.replace(lParen, '')
-							newStore = newStore.replace(rParen, '')
-							return {
-								store: newStore,
-								display: newDisplay,
-								runningTotal: '00',
-								isNegative: !isNegative,
-								negate: true
-							}
-						} else {
-							return {
-								display: newDisplay,//11
-								runningTotal: rtArray.join(''),//-11++11
-								isNegative: !isNegative//f
-							}
-						}
-					} else {
-						rtArray.splice(lastOpIndex, 1, '+')//[1,-,2]
-						return {
-							display: '-' + display,//-2
-							runningTotal: rtArray.join(''),
-							isNegative: !isNegative
-						}
-					}
-				})
-				break
-			case '+':
-				this.setState(prevState => {
-					const { display, isNegative } = prevState
-					if (isNegative) {
-						const newDisplay = display.replace('-', '')//
-						rtArray.splice(lastOpIndex, 1, '-')//[7,-,5]
-						return {
-							display: newDisplay,//5
-							runningTotal: rtArray.join(''),
-							isNegative: !isNegative
-						}
-					} else {
-						if (!this.state.negate) { 
-							rtArray.splice(lastOpIndex, 1, '-')//[7,-,5]
-							return {
-								display: '-' + display,//-5
-								runningTotal: rtArray.join(''),//7-5
-								isNegative: !isNegative,
-							}
-						}
-						
-					}
-				})
-				break
-			default:
-				return
-		}
-		*/
 	}
 	
-
 	negateNum = () => {
 		this.setState(prevState => {
 			const { store, display, isNegative} = prevState
-			//const rtArray = [...runningTotal]
-			//const lastOp = this.lastOperatorEntered()
-			//const lastOpIndex = rtArray.lastIndexOf(lastOp)
+
 			if (isNegative) {
 				const posDisplay = display.replace('-', '')
 				return {
 					display: posDisplay,
 					runningTotal: `${store}${posDisplay}`,
 					isNegative: !isNegative
-					//negate: true
 				}
 			} else {
 				return {
@@ -607,13 +463,7 @@ class App extends Component {
 		if (total.includes('.') && (total.length - total.indexOf('.')) > 5) {
 			total = parseFloat(total).toFixed(4)
 		}
-		/*
-		if (total.includes('-')) {
-			negativeState = true
-		} else {
-			negativeState = false
-		}
-		*/
+
 		const negativeState = total.includes('-') ? true : false
 		this.setState({
 			display: total,
