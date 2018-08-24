@@ -1,4 +1,5 @@
 import React from 'react'
+import './index.css'
 
 const ButtonPanel = ({ handleChange }) => 
 	// sends values from button to App state
