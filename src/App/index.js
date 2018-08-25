@@ -405,9 +405,17 @@ class App extends Component {
 		// determines how to add new characters
 		// to display and runningTotal
 
-		// need to tell it not to change negative state when entering
-		// a decimal or digits after a decimal
-		this.setState({ isNegative: false })
+		this.setState(prevState => {
+			// allows user to append decimals and
+			// integers to a negative term without
+			// changing the state of isNegative
+			const { display } = prevState
+			if (display[0] !== '-') {
+				return {
+					isNegative: false
+				}
+			}
+		})
 
 		const lastChar = this.lastCharEntered()
 		if (this.state.ops.includes(lastChar) || this.state.runningTotal === '0') {
