@@ -2,4 +2,46 @@ body {
   margin: 0;
   padding: 0;
   font-family: Tahoma;
+  background: black;
+}
+
+.display,
+.store {
+	text-align: right;
+	width: 260px;
+}
+
+.store {
+	border-bottom: none;
+	border-radius: 5px 5px 0px 0px;
+}
+
+.display {
+	border-top: none;
+	border-radius: 0px 0px 5px 5px;
+	height: 35px;
+	font-size: 24px;
+}
+
+.button {
+	background: inherit;
+	color: green;
+	border: 2px solid;
+	border-radius: 50px;
+	height: 60px;
+	width: 60px;
+	margin: 4px;
+	font-size: 22px;
+}
+
+.button:focus {
+	outline: none;
+}
+
+.button:hover {
+	background: #2a2a2a;
+}
+
+.button:active {
+	color: white;
 }
