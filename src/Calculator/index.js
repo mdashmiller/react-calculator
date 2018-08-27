@@ -1,23 +1,23 @@
 import React from 'react'
 import ButtonPanel from '../Buttons'
-import './index.css'
+import '../index.css'
 
 const Calculator = ({
 	display, 
 	store, 
-	handleChange, 
+	handleChange,
 	calculate, 
 	onSubmit 
 }) =>
 	<form onSubmit={onSubmit}>
-		Store: <input
+		<input
 			className="store"
 			type="text"
 			value={store}
 			disabled
 		/>
 		<br/>
-		Display: <input
+		<input
 			className="display"
 			type="text"
 			placeholder={display}
@@ -25,10 +25,7 @@ const Calculator = ({
 			disabled
 		/>
 		<br/>
-		<button onClick={() => calculate()}>
-			Calculate
-		</button>
-		<ButtonPanel handleChange={handleChange} />
+		<ButtonPanel handleChange={handleChange} calculate={calculate} />
 	</form>
 
 export default Calculator

@@ -1,5 +1,108 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: Tahoma;
+  background: #202020;
+}
+
+.app {
+  text-align: center;
+  margin-top: 75px;
+}
+
+.wrapper {
+	width: 272px;
+	margin: 4px auto 0;
+}
+
+.display,
+.store {
+	text-align: right;
+	width: 260px;
+	background-color: #e1e8f0;
+	border: none;
+	padding-right: 4px;
+}
+
+.store {
+	border-radius: 5px 5px 0px 0px;
+	font-size: 16px;
+}
+
+.display {
+	border-radius: 0px 0px 5px 5px;
+	height: 35px;
+	font-size: 28px;
+}
+
+.top-row {
+	display: grid;
+	grid-template-columns: 2fr 1fr 1fr;
+	justify-items: right;
+}
+
+.button-row {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+}
+
+.button {
+	background: inherit;
+	border: 2px solid;
+	border-radius: 50px;
+	height: 60px;
+	width: 60px;
+	margin: 4px;
+	font-size: 22px;
+}
+
+.number {
+	color: #6ed3cf;
+}
+
+.func {
+	color: #e1e8f0;
+}
+
+.op {
+	color: #9068be;
+}
+
+.mod {
+	color: #e62739;
+}
+
+.button:focus {
+	outline: none;
+}
+
+.button:hover {
+	background: #3a3a3a;
+}
+
+.button:active {
+	color: white;
+}
+
+/*/////////////// media queries //////////////////*/
+
+@media screen and (max-width: 287px) {
+
+	.wrapper {
+		width: 248px;
+	}
+
+	.top-row input {
+		margin-right: 8px;
+	}
+
+	.display,
+	.store {
+		width: 240px;
+	}
+
+	.button {
+		height: 50px;
+		width: 50px;
+	}
+	
 }
