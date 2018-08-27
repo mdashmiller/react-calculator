@@ -5,7 +5,7 @@ import '../index.css'
 const Calculator = ({
 	display, 
 	store, 
-	handleChange, 
+	handleChange,
 	calculate, 
 	onSubmit 
 }) =>
@@ -25,10 +25,7 @@ const Calculator = ({
 			disabled
 		/>
 		<br/>
-		<button onClick={() => calculate()}>
-			Calculate
-		</button>
-		<ButtonPanel handleChange={handleChange} />
+		<ButtonPanel handleChange={handleChange} calculate={calculate} />
 	</form>
 
 export default Calculator

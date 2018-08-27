@@ -5,6 +5,16 @@ body {
   background: black;
 }
 
+.app {
+  text-align: center;
+  margin-top: 75px;
+}
+
+.wrapper {
+	width: 272px;
+	margin: 0 auto;
+}
+
 .display,
 .store {
 	text-align: right;
@@ -14,13 +24,20 @@ body {
 .store {
 	border-bottom: none;
 	border-radius: 5px 5px 0px 0px;
+	font-size: 16px;
 }
 
 .display {
 	border-top: none;
 	border-radius: 0px 0px 5px 5px;
 	height: 35px;
-	font-size: 24px;
+	font-size: 28px;
+}
+
+.top-row {
+	display: grid;
+	grid-template-columns: 2fr 1fr 1fr;
+	justify-items: right;
 }
 
 .button {
