@@ -107,13 +107,12 @@ class App extends Component {
 		)
 	}
 
-	lastOperatorEntered = (/*field*/) => {
+	lastOperatorEntered = () => {
 		// determines the last operator entered by the user
 		const rtArray = [...this.state.runningTotal]
 		return rtArray.filter(item => 
 			this.state.ops.includes(item)									 
 		).pop()
-		// return getOperators(field).pop()
 	}
 
 	updateWithOperator = operator => {
@@ -152,7 +151,7 @@ class App extends Component {
 	}
 
 	replaceLastChar = (char, field) => {
-		// removes the last char from an array
+		// removes the last char from a string
 		// and replaces it with another
 		const prunedArray = this.removeLastChar(field)
 		prunedArray.push(char)
@@ -170,8 +169,10 @@ class App extends Component {
 	calcRunningTotal = () => {
 		// each time an operator is entered after a number 
 		// runningTotal is evaluated
+
 		let total = math.eval(this.state.runningTotal).toString()
 
+		// round total to max of 4 decimal places
 		if (total.includes('.') && (total.length - total.indexOf('.')) > 5) {
 			total = parseFloat(total).toFixed(4)
 		}
@@ -464,6 +465,7 @@ class App extends Component {
 	calculate = () => {
 		// evaluates runningTotal, sets the resulting value to display
 		// and clears the store when '=' button is pressed
+
 		let total
 		const lastChar = this.lastCharEntered()
 
@@ -502,8 +504,6 @@ class App extends Component {
 		e.preventDefault()
 
 	render() {
-		console.log(`runningTotal is ${this.state.runningTotal}`)
-		console.log(`isNegative: ${this.state.isNegative}`)
 		return (
 			<div className="app">
 				<Calculator 
