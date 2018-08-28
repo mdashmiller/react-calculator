@@ -4,9 +4,17 @@ body {
   background: #202020;
 }
 
+h1 {
+	font-family: Arial;
+	font-size: 2.25em;
+	margin: 0 0 4px 0;
+	color: #e62739;
+	font-weight: 400;
+}
+
 .app {
   text-align: center;
-  margin-top: 75px;
+  margin-top: 30px;
 }
 
 .wrapper {
@@ -103,6 +111,10 @@ body {
 	.button {
 		height: 50px;
 		width: 50px;
+	}
+
+	h1 {
+		font-size: 2em;
 	}
 	
 }
