@@ -90,6 +90,18 @@ class App extends Component {
 		}
 	}
 
+	/*
+	areNegatives = () => {
+		// checks runningTotal for the presence
+		// of any negative terms
+		if (this.state.runningTotal.indexOf('(') !== -1) {
+			return true
+		} else {
+			return false
+		}
+	}
+	*/
+
 	lastCharEntered = () => {
 		// determines the last character entered by the user
 		const rtArray = [...this.state.runningTotal]
@@ -212,7 +224,6 @@ class App extends Component {
 				runningTotal
 			} = prevState
 
-			//const tempStore = store + display + operator
 			const tempStore = store + display + ` ${operator} `
 			let newStore
 
@@ -236,7 +247,7 @@ class App extends Component {
 	}
 
 	handleParens = tempStore => {
-		//when a negaive number is entered it
+		// when a negaive number is entered it
 		// will be encapsulated in parentheses
 		const openParens = this.addOpenParens(tempStore)
 		
