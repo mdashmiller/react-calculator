@@ -8,7 +8,7 @@ class App extends Component {
 		display: '0',
 		store: '',
 		runningTotal: '0',
-		ops: ['+', '-', '*', '/'],
+		ops: ['+', '-', 'x', '/'],
 		calculateCalled: false,
 		isNegative: false
 	}
@@ -28,7 +28,7 @@ class App extends Component {
 				break
 			case '+':
 			case '-':
-			case '*':
+			case 'x':
 			case '/':
 				this.updateWithOperator(btn)
 		 		break
@@ -125,7 +125,7 @@ class App extends Component {
 		switch (lastChar) {
 			case '+':
 			case '-':
-			case '*':
+			case 'x':
 			case '/':
 				// if the last character entered was an operator then
 				// replace it with the new operator
@@ -170,7 +170,12 @@ class App extends Component {
 		// each time an operator is entered after a number 
 		// runningTotal is evaluated
 
-		let total = math.eval(this.state.runningTotal).toString()
+		// 'x' chars in runningTotal need to be
+		// converted to '*' chars for math.eval()
+		// to work properly
+		const toEvaluate = this.convertX(this.state.runningTotal)
+
+		let total = math.eval(toEvaluate).toString()
 
 		// round total to max of 4 decimal places
 		if (total.includes('.') && (total.length - total.indexOf('.')) > 5) {
@@ -182,6 +187,13 @@ class App extends Component {
 			runningTotal: total,
 			isNegative: negativeState
 		})
+	}
+
+	convertX = (str) => {
+		// replaces all 'x' chars in a string
+		// with '*' chars
+		const x = /[x]/g
+		return str.replace(x, '*')
 	}
 
 	chainOperations = operator => {
@@ -201,7 +213,7 @@ class App extends Component {
 			// negative numbers have been entered
 			if (tempStore.indexOf('--') !== -1  
 				|| tempStore.indexOf('+-') !== -1 
-				|| tempStore.indexOf('*-') !== -1 
+				|| tempStore.indexOf('x-') !== -1 
 				|| tempStore.indexOf('/-') !== -1) {
 				newStore = this.handleParens(tempStore)
 			} else {
@@ -242,7 +254,7 @@ class App extends Component {
 		// front of each negative number
 		const dblNeg = /--/g
 		const plusNeg = /\+-/g
-		const timesNeg = /\*-/g
+		const timesNeg = /\x-/g
 		const divNeg = /\/-/g
 		const endParen = /\)/g
 		// remove any pre-existing closing parentheses
@@ -251,7 +263,7 @@ class App extends Component {
 		// insert opening parentheses where needed
 		let openParens = baseString.replace(dblNeg, '-(-')
 		openParens = openParens.replace(plusNeg, '+(-')
-		openParens = openParens.replace(timesNeg, '*(-')
+		openParens = openParens.replace(timesNeg, 'x(-')
 		return openParens.replace(divNeg, '/(-')
 	}
 
@@ -466,13 +478,18 @@ class App extends Component {
 		// evaluates runningTotal, sets the resulting value to display
 		// and clears the store when '=' button is pressed
 
+		// replace all 'x' chars with '*' chars for
+		// math.eval() to work properly
+		const rtToEvaluate = this.convertX(this.state.runningTotal)
+		const displayToEvaluate = this.convertX(this.state.display)
+
 		let total
 		const lastChar = this.lastCharEntered()
 
 		if (this.state.ops.includes(lastChar)) {
-			total = math.eval(this.state.runningTotal + this.state.display).toString()
+			total = math.eval(rtToEvaluate + displayToEvaluate).toString()
 		} else {
-			total = math.eval(this.state.runningTotal).toString()
+			total = math.eval(rtToEvaluate).toString()
 		}
 		
 		// rounds total to maximum of four decimal places
