@@ -142,28 +142,34 @@ class App extends Component {
 	swapLastOperator = operator => {
 		// swaps the last char on store and runningTotal for
 		// a new operator char
-		const newRunningTotal = this.replaceLastChar(operator, this.state.runningTotal)
-		const newStore = this.replaceLastChar(operator, this.state.store)
+
+		// spaces are added around operators in
+		// store for better ux
+		const opPlusSpaces = ` ${operator} `
+
+		const newRunningTotal = this.replaceEndChars(operator, this.state.runningTotal, 1)
+		const newStore = this.replaceEndChars(opPlusSpaces, this.state.store, 3)
 		this.setState({
 			runningTotal : newRunningTotal,
 			store : newStore
 		})
 	}
 
-	replaceLastChar = (char, field) => {
-		// removes the last char from a string
-		// and replaces it with another
-		const prunedArray = this.removeLastChar(field)
-		prunedArray.push(char)
+	replaceEndChars = (chars, str, num) => {
+		// swaps a specified number of chars
+		// from the end of a string with others
+		const prunedArray = this.removeEndChars(str, num)
+		prunedArray.push(chars)
 		return prunedArray.join('')
 	}
 
-	removeLastChar = field => {
-		// returns an array with the last char removed
-		const array = [...field]
+	removeEndChars = (str, num) => {
+		// returns an array with the specified
+		// number of end chars removed
+		const array = [...str]
 		const length = array.length
 		return array.filter((item, index) =>
-			index !== length -1)
+			index <= length - num)
 	}
 
 	calcRunningTotal = () => {
@@ -206,15 +212,16 @@ class App extends Component {
 				runningTotal
 			} = prevState
 
-			const tempStore = store + display + operator
+			//const tempStore = store + display + operator
+			const tempStore = store + display + ` ${operator} `
 			let newStore
 
 			// checking to see if any
 			// negative numbers have been entered
-			if (tempStore.indexOf('--') !== -1  
-				|| tempStore.indexOf('+-') !== -1 
-				|| tempStore.indexOf('x-') !== -1 
-				|| tempStore.indexOf('/-') !== -1) {
+			if (tempStore.indexOf('- -') !== -1  
+				|| tempStore.indexOf('+ -') !== -1 
+				|| tempStore.indexOf('x -') !== -1 
+				|| tempStore.indexOf('/ -') !== -1) {
 				newStore = this.handleParens(tempStore)
 			} else {
 				newStore = tempStore
@@ -240,7 +247,7 @@ class App extends Component {
 		// where to insert a closing parenthesis
 		openParensArr.forEach((item, index) => {
 			if (item === '(') {
-				beginCheckLocations.push(index + 3)
+				beginCheckLocations.push(index + 4)
 			}						 
 		})
 
@@ -252,19 +259,21 @@ class App extends Component {
 	addOpenParens = tempStore => {
 		// returns a string with an opening parenthesis in
 		// front of each negative number
-		const dblNeg = /--/g
-		const plusNeg = /\+-/g
-		const timesNeg = /\x-/g
-		const divNeg = /\/-/g
+		const dblNeg = /- -/g
+		const plusNeg = /\+ -/g
+		const timesNeg = /\x -/g
+		const divNeg = /\/ -/g
 		const endParen = /\)/g
+
 		// remove any pre-existing closing parentheses
 		// to avoid double parentheses later
 		const baseString = tempStore.replace(endParen, '')
+
 		// insert opening parentheses where needed
-		let openParens = baseString.replace(dblNeg, '-(-')
-		openParens = openParens.replace(plusNeg, '+(-')
-		openParens = openParens.replace(timesNeg, 'x(-')
-		return openParens.replace(divNeg, '/(-')
+		let openParens = baseString.replace(dblNeg, '- (-')
+		openParens = openParens.replace(plusNeg, '+ (-')
+		openParens = openParens.replace(timesNeg, 'x (-')
+		return openParens.replace(divNeg, '/ (-')
 	}
 
 	createStorePrefix = (locations, tempStore) => {
@@ -320,7 +329,7 @@ class App extends Component {
 		
 		substrings.forEach(substr => {
 			let substrArray = [...substr]
-			substrArray.splice(locations[counter], 0, ')')
+			substrArray.splice(locations[counter], 0, ') ')
 			counter++
 			newSubStrings.push(substrArray.join(''))
 		})
