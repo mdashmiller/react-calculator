@@ -19,7 +19,7 @@ const ButtonPanel = ({ handleChange, calculate }) =>
 			<input className="button number" type="button" value="4" onClick={handleChange} />
 			<input className="button number" type="button" value="5" onClick={handleChange} />
 			<input className="button number" type="button" value="6" onClick={handleChange} />
-			<input className="button op" type="button" value="*" onClick={handleChange} />
+			<input className="button op" type="button" value="x" onClick={handleChange} />
 		</div>
 		<div className="button-row">
 			<input className="button number" type="button" value="1" onClick={handleChange} />
