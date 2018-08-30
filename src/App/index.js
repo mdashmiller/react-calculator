@@ -120,7 +120,7 @@ class App extends Component {
 
 	lastOperatorEntered = () => {
 		// determines the last operator entered by the user
-		const rtArray = [...this.state.runningTotal]// [4, ,+, ,-,1,0]
+		const rtArray = [...this.state.runningTotal]
 		return rtArray.filter(item => 
 			this.state.ops.includes(item)									 
 		).pop()
@@ -540,7 +540,6 @@ class App extends Component {
 		e.preventDefault()
 
 	render() {
-		console.log(`running total is ${this.state.runningTotal}`)
 		return (
 			<div className="app">
 				<Calculator 

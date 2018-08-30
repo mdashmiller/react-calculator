@@ -2,10 +2,10 @@ body {
   margin: 0;
   padding: 0;
   background: #202020;
+  font-family: Arial, sans-serif;
 }
 
 h1 {
-	font-family: Arial;
 	font-size: 2.25em;
 	margin: 0 0 4px 0;
 	color: #e62739;
@@ -34,6 +34,7 @@ h1 {
 .store {
 	border-radius: 5px 5px 0px 0px;
 	font-size: 16px;
+	font-family: Tahoma, sans-serif;
 }
 
 .display {
