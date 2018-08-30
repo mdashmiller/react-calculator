@@ -84,23 +84,22 @@ class App extends Component {
 			// removes any digits from runningTotal that
 			// are after the last operator entered
 			const lastOpIndex = rtArray.lastIndexOf(lastOp)
-			return rtArray.filter((item, index) => 
-				index <= lastOpIndex	
-			).join('')
-		}
-	}
 
-	/*
-	areNegatives = () => {
-		// checks runningTotal for the presence
-		// of any negative terms
-		if (this.state.runningTotal.indexOf('(') !== -1) {
-			return true
-		} else {
-			return false
+			// check if last term entered was a
+			// negative number
+			if (this.state.ops.includes(rtArray[lastOpIndex - 2])) {
+				// if the last term is a negative number
+				// an additional 2 chars need to be removed
+				return rtArray.filter((item, index) =>
+					index <= lastOpIndex -2 
+				).join('')
+			} else {
+				return rtArray.filter((item, index) => 
+					index <= lastOpIndex	
+				).join('')
+			}
 		}
 	}
-	*/
 
 	lastCharEntered = () => {
 		// determines the last character entered by the user
@@ -109,11 +108,11 @@ class App extends Component {
 		return rtArray[rtLength - 1]
 	}
 
-	getOperators = field => {
+	getOperators = str => {
 		// takes a string and returns
 		// an array of all the operators
 		// it includes
-		const array = [...field]
+		const array = [...str]
 		return array.filter(item => 
 			this.state.ops.includes(item)									 
 		)
@@ -121,7 +120,7 @@ class App extends Component {
 
 	lastOperatorEntered = () => {
 		// determines the last operator entered by the user
-		const rtArray = [...this.state.runningTotal]
+		const rtArray = [...this.state.runningTotal]// [4, ,+, ,-,1,0]
 		return rtArray.filter(item => 
 			this.state.ops.includes(item)									 
 		).pop()
@@ -541,6 +540,7 @@ class App extends Component {
 		e.preventDefault()
 
 	render() {
+		console.log(`running total is ${this.state.runningTotal}`)
 		return (
 			<div className="app">
 				<Calculator 
