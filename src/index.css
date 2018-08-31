@@ -25,22 +25,23 @@ h1 {
 .display,
 .store {
 	text-align: right;
-	width: 260px;
 	background-color: #e1e8f0;
 	border: none;
-	padding-right: 4px;
 }
 
 .store {
+	width: 264px;
 	border-radius: 5px 5px 0px 0px;
 	font-size: 16px;
 	font-family: Tahoma, sans-serif;
 }
 
 .display {
+	width: 260px;
 	border-radius: 0px 0px 5px 5px;
 	height: 35px;
 	font-size: 28px;
+	padding-right: 4px;
 }
 
 .top-row {
@@ -104,8 +105,11 @@ h1 {
 		margin-right: 8px;
 	}
 
-	.display,
 	.store {
+		width: 244px;
+	}
+
+	.display {
 		width: 240px;
 	}
 
