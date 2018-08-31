@@ -34,6 +34,7 @@ h1 {
 	border-radius: 5px 5px 0px 0px;
 	font-size: 16px;
 	font-family: Tahoma, sans-serif;
+	text-overflow: ellipsis;
 }
 
 .display {
