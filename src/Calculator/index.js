@@ -12,6 +12,10 @@ const Calculator = ({
 	<div>
 		<h1>REACTulator</h1>
 		<form onSubmit={onSubmit}>
+			<div className="store">
+				<span>{store}</span>
+			</div>
+			{/*
 			<input
 				className="store"
 				type="text"
@@ -19,6 +23,7 @@ const Calculator = ({
 				disabled
 			/>
 			<br/>
+			*/}
 			<input
 				className="display"
 				type="text"
