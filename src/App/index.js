@@ -109,9 +109,8 @@ class App extends Component {
 	}
 
 	getOperators = str => {
-		// takes a string and returns
-		// an array of all the operators
-		// it includes
+		// takes a string and returns an array 
+		// of all the operators it includes
 		const array = [...str]
 		return array.filter(item => 
 			this.state.ops.includes(item)									 
