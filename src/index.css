@@ -30,9 +30,10 @@ h1 {
 }
 
 .store {
-	width: 264px;
+	width: 262px;
 	height: 20px;
 	margin: 0 auto;
+	padding-right: 2px;
 	color: rgb(84, 84, 84);
 	border-radius: 5px 5px 0px 0px;
 	font-size: 16px;
@@ -46,6 +47,7 @@ h1 {
 span {
 	position: absolute;
 	right: 0;
+	padding-right: 3px;
 }
 
 .display {
@@ -118,7 +120,7 @@ span {
 	}
 
 	.store {
-		width: 244px;
+		width: 242px;
 	}
 
 	.display {
