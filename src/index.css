@@ -31,10 +31,21 @@ h1 {
 
 .store {
 	width: 264px;
+	height: 20px;
+	margin: 0 auto;
+	color: rgb(84, 84, 84);
 	border-radius: 5px 5px 0px 0px;
 	font-size: 16px;
 	font-family: Tahoma, sans-serif;
+	white-space: nowrap;
+	overflow: hidden;
 	text-overflow: ellipsis;
+	position: relative;
+}
+
+span {
+	position: absolute;
+	right: 0;
 }
 
 .display {
