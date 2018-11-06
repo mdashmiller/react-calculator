@@ -1,0 +1,171 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<App /> has a valid snapshot 1`] = `
+<div
+  className="app"
+>
+  <div>
+    <h1>
+      REACTulator
+    </h1>
+    <form
+      onSubmit={[Function]}
+    >
+      <div
+        className="store"
+      >
+        <span>
+          
+        </span>
+      </div>
+      <input
+        className="display"
+        disabled={true}
+        placeholder="0"
+        type="text"
+        value="0"
+      />
+      <br />
+      <div
+        className="wrapper"
+      >
+        <div
+          className="top-row"
+        >
+          <input
+            className="button func"
+            onClick={[Function]}
+            type="button"
+            value="ce"
+          />
+          <input
+            className="button func"
+            onClick={[Function]}
+            type="button"
+            value="c"
+          />
+          <input
+            className="button mod"
+            onClick={[Function]}
+            type="button"
+            value="+/-"
+          />
+        </div>
+        <div
+          className="button-row"
+        >
+          <input
+            className="button number"
+            onClick={[Function]}
+            type="button"
+            value="7"
+          />
+          <input
+            className="button number"
+            onClick={[Function]}
+            type="button"
+            value="8"
+          />
+          <input
+            className="button number"
+            onClick={[Function]}
+            type="button"
+            value="9"
+          />
+          <input
+            className="button op"
+            onClick={[Function]}
+            type="button"
+            value="/"
+          />
+        </div>
+        <div
+          className="button-row"
+        >
+          <input
+            className="button number"
+            onClick={[Function]}
+            type="button"
+            value="4"
+          />
+          <input
+            className="button number"
+            onClick={[Function]}
+            type="button"
+            value="5"
+          />
+          <input
+            className="button number"
+            onClick={[Function]}
+            type="button"
+            value="6"
+          />
+          <input
+            className="button op"
+            onClick={[Function]}
+            type="button"
+            value="x"
+          />
+        </div>
+        <div
+          className="button-row"
+        >
+          <input
+            className="button number"
+            onClick={[Function]}
+            type="button"
+            value="1"
+          />
+          <input
+            className="button number"
+            onClick={[Function]}
+            type="button"
+            value="2"
+          />
+          <input
+            className="button number"
+            onClick={[Function]}
+            type="button"
+            value="3"
+          />
+          <input
+            className="button op"
+            onClick={[Function]}
+            type="button"
+            value="-"
+          />
+        </div>
+        <div
+          className="button-row"
+        >
+          <input
+            className="button number"
+            onClick={[Function]}
+            type="button"
+            value="0"
+          />
+          <input
+            className="button mod"
+            onClick={[Function]}
+            type="button"
+            value="."
+          />
+          <input
+            className="button func"
+            id="calc"
+            onClick={[Function]}
+            type="button"
+            value="="
+          />
+          <input
+            className="button op"
+            onClick={[Function]}
+            type="button"
+            value="+"
+          />
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+`;
