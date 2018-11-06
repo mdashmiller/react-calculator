@@ -30,7 +30,7 @@ const ButtonPanel = ({ handleChange, calculate }) =>
 		<div className="button-row">
 			<input className="button number" type="button" value="0" onClick={handleChange} />
 			<input className="button mod" type="button" value="." onClick={handleChange} />
-			<input className="button func" type="button" value="=" onClick={() => calculate()} />
+			<input className="button func" id="calc" type="button" value="=" onClick={() => calculate()} />
 			<input className="button op" type="button" value="+" onClick={handleChange} />
 		</div>
 	</div>	
