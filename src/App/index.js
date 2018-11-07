@@ -15,7 +15,7 @@ class App extends Component {
 
 	// component methods
 
-	handleChange = e => {
+	handleClick = e => {
 		// sets values and calls functions depending
 		// on which button is pressed
 		const btn = e.target.value
@@ -544,7 +544,7 @@ class App extends Component {
 				<Calculator 
 					display={this.state.display}
 					store={this.state.store}
-					handleChange={this.handleChange}
+					handleClick={this.handleClick}
 					calculate={this.calculate}
 					onSubmit={this.onSubmit}
 				/>	

@@ -35,12 +35,12 @@ describe('<Calculator />', () => {
 		expect(wrapper.find('form')).to.have.lengthOf(1)
 	})
 
-	it('renders 1 store div', () => {
+	it('renders 1 div.store', () => {
 		const wrapper = shallow(<Calculator />)
 		expect(wrapper.find('div.store')).to.have.lengthOf(1)
 	})
 
-	it('renders 1 display input', () => {
+	it('renders 1 input.display', () => {
 		const wrapper = shallow(<Calculator />)
 		expect(wrapper.find('input.display')).to.have.lengthOf(1)	})
 
@@ -49,10 +49,29 @@ describe('<Calculator />', () => {
 		expect(wrapper.find(ButtonPanel)).to.have.lengthOf(1)
 	})
 
-	//it('handles submit events', () => {})
+	it('displays the store value in div.store', () => {
+		const store = 'some value'
+		const wrapper = shallow(<Calculator store={store} />)
+		expect(wrapper.find('.store span').props().children).to.equal(store)
+	})
 
-	//it('handles change events', () => {})
-	
-	//it('handles click events', () => {})
+	it('has a value of display in input.display', () => {
+		const display = 'some value'
+		const wrapper = shallow(<Calculator display={display} />)
+		expect(wrapper.find('input.display').props().value).to.equal(display)
+	})
+
+	it('has a placeholder of display in input.display', () => {
+		const display = 'some value'
+		const wrapper = shallow(<Calculator display={display} />)
+		expect(wrapper.find('input.display').props().placeholder).to.equal(display)
+	})
+
+	it('handles submit events', () => {
+		const onSubmit = spy()
+		const wrapper = shallow(<Calculator onSubmit={onSubmit} />)
+		wrapper.find('form').simulate('submit')
+		expect(onSubmit).to.have.property('callCount', 1)
+	})
 
 })

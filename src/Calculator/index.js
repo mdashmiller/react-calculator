@@ -5,7 +5,7 @@ import '../index.css'
 const Calculator = ({
 	display, 
 	store, 
-	handleChange,
+	handleClick,
 	calculate, 
 	onSubmit 
 }) =>
@@ -15,15 +15,6 @@ const Calculator = ({
 			<div className="store">
 				<span>{store}</span>
 			</div>
-			{/*
-			<input
-				className="store"
-				type="text"
-				value={store}
-				disabled
-			/>
-			<br/>
-			*/}
 			<input
 				className="display"
 				type="text"
@@ -32,7 +23,7 @@ const Calculator = ({
 				disabled
 			/>
 			<br/>
-			<ButtonPanel handleChange={handleChange} calculate={calculate} />
+			<ButtonPanel handleClick={handleClick} calculate={calculate} />
 		</form>
 	</div>
 

@@ -39,8 +39,25 @@ describe('<ButtonPanel />', () => {
 		expect(wrapper.find('div.button-row')).to.have.lengthOf(4)
 	})
 
-	//it('handles click events', () => {})
+	it('renders 19 buttons', () => {
+		const wrapper = shallow(<ButtonPanel />)
+		expect(wrapper.find('.button')).to.have.lengthOf(19)
+	})
 
-	//it('handles change', () => {})
+	it('calls calculate() when #calc is clicked', () => {
+		const calculate = spy()
+		const wrapper = shallow(<ButtonPanel calculate={calculate}/>)
+		wrapper.find('input#calc').simulate('click')
+		expect(calculate).to.have.property('callCount', 1)
+	})
+
+	it('calls handleClick() when the buttons are clicked', () => {
+		const handleClick = spy()
+		const wrapper = shallow(<ButtonPanel handleClick={handleClick} />)
+		wrapper.find('.button').not('#calc').forEach(node => {
+			node.simulate('click')
+		})
+		expect(handleClick).to.have.property('callCount', 18)
+	})
 
 })
