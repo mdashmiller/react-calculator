@@ -3,11 +3,15 @@ import ReactDOM from 'react-dom'
 import renderer from 'react-test-renderer'
 import Enzyme, { shallow } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
+import chai, { expect } from 'chai'
 import { spy } from 'sinon'
 
 import ButtonPanel from '../Buttons'
 
 Enzyme.configure({ adapter: new Adapter() })
+
+global.jestExpect = global.expect
+global.expect = chai.expect
 
 describe('<ButtonPanel />', () => {
 
@@ -22,17 +26,17 @@ describe('<ButtonPanel />', () => {
 			<ButtonPanel />
 		)
 		let tree = component.toJSON()
-		expect(tree).toMatchSnapshot()
+		jestExpect(tree).toMatchSnapshot()
 	})
 
 	it('renders one top row', () => {
 		const wrapper = shallow(<ButtonPanel />)
-		expect(wrapper.find('div.top-row').length).toBe(1)
+		expect(wrapper.find('div.top-row')).to.have.lengthOf(1)
 	})
 
 	it('renders 4 button rows', () => {
 		const wrapper = shallow(<ButtonPanel />)
-		expect(wrapper.find('div.button-row').length).toBe(4)
+		expect(wrapper.find('div.button-row')).to.have.lengthOf(4)
 	})
 
 	//it('handles click events', () => {})
