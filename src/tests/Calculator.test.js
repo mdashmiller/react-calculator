@@ -3,12 +3,16 @@ import ReactDOM from 'react-dom'
 import renderer from 'react-test-renderer'
 import Enzyme, { shallow } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
+import chai, { expect } from 'chai'
 import { spy } from 'sinon'
 
 import Calculator from '../Calculator'
 import ButtonPanel from '../Buttons'
 
 Enzyme.configure({ adapter: new Adapter() })
+
+global.jestExpect = global.expect
+global.expect = chai.expect
 
 describe('<Calculator />', () => {
 
@@ -23,27 +27,26 @@ describe('<Calculator />', () => {
 			<Calculator />
 		)
 		let tree = component.toJSON()
-		expect(tree).toMatchSnapshot()
+		jestExpect(tree).toMatchSnapshot()
 	})
 
 	it('renders 1 form element', () => {
 		const wrapper = shallow(<Calculator />)
-		expect(wrapper.find('form').length).toBe(1)
+		expect(wrapper.find('form')).to.have.lengthOf(1)
 	})
 
 	it('renders 1 store div', () => {
 		const wrapper = shallow(<Calculator />)
-		expect(wrapper.find('div.store').length).toBe(1)
+		expect(wrapper.find('div.store')).to.have.lengthOf(1)
 	})
 
 	it('renders 1 display input', () => {
 		const wrapper = shallow(<Calculator />)
-		expect(wrapper.find('input.display').length).toBe(1)
-	})
+		expect(wrapper.find('input.display')).to.have.lengthOf(1)	})
 
 	it('renders 1 <ButtonPanel /> component', () => {
 		const wrapper = shallow(<Calculator />)
-		expect(wrapper.find(ButtonPanel).length).toBe(1)
+		expect(wrapper.find(ButtonPanel)).to.have.lengthOf(1)
 	})
 
 	//it('handles submit events', () => {})
