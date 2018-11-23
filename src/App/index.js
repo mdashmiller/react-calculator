@@ -10,7 +10,8 @@ class App extends Component {
 		runningTotal: '0',
 		ops: ['+', '-', 'x', '/'],
 		calculateCalled: false,
-		isNegative: false
+		isNegative: false,
+		freeze: false
 	}
 
 	// component methods
@@ -18,6 +19,13 @@ class App extends Component {
 	handleClick = e => {
 		// sets values and calls functions depending
 		// on which button is pressed
+
+		// user input is disabled when the
+		// "digit limit exceeded" message is
+		// being displayed
+		const { freeze } = this.state
+		if (freeze) return
+
 		const btn = e.target.value
 		switch (btn) {
 			case 'c':
@@ -54,7 +62,8 @@ class App extends Component {
 			store: '',
 			runningTotal: '0',
 			calculateCalled: false,
-			isNegative: false
+			isNegative: false,
+			freeze: false
 		})
 
 	undoLastInput = () => {
@@ -145,7 +154,7 @@ class App extends Component {
 				// if the last character entered was a number then
 				// append the operator to runningTotal and store
 				this.calcRunningTotal()
-				this.chainOperations(operator)
+				this.chainOperations(operator)		
 		}
 	}
 
@@ -198,11 +207,25 @@ class App extends Component {
 			total = parseFloat(total).toFixed(4)
 		}
 
-		const negativeState = total.includes('-') ? true : false
-		this.setState({
-			runningTotal: total,
-			isNegative: negativeState
-		})
+		// check to see if chars limit has been reached
+		// and if so display an error message and temporarily
+		// freeze user input
+		if(total.length > 15) {
+			const { display } = this.state
+			this.setState({ 
+				display: 'LIMIT EXCEEDED',
+				freeze: true
+			})
+			setTimeout(() => this.clearErrorMessage(display), 1500)
+		} else {
+			// if total chars don't exceed the limit then set state
+			// to prepare for the next term to be entered
+			const negativeState = total.includes('-') ? true : false
+			this.setState({
+				runningTotal: total,
+				isNegative: negativeState
+			})
+		}
 	}
 
 	convertX = (str) => {
@@ -221,6 +244,10 @@ class App extends Component {
 				display,
 				runningTotal
 			} = prevState
+
+			// don't add the 'LIMIT EXCEEDED' error
+			// message to the store
+			if (display === 'LIMIT EXCEEDED') return
 
 			const tempStore = store + display + ` ${operator} `
 			let newStore
@@ -355,36 +382,36 @@ class App extends Component {
 	handleDecimal = () => {
 		// determines when to add decimals to
 		// display and runningTotal
-			const rtArray = [...this.state.runningTotal]
-			const lastChar = this.lastCharEntered()
-			const lastOp = this.lastOperatorEntered()
+		const rtArray = [...this.state.runningTotal]
+		const lastChar = this.lastCharEntered()
+		const lastOp = this.lastOperatorEntered()
 
-			if (lastOp === undefined) {
-				if (rtArray.includes('.')) {
-					// if there is only one term and
-					// it already contains a decimal, return
-					return
-				} else {
-					// append the decimal if the term doesn't
-					// yet contain one
-					return this.updateWithChar('.')
-				}
-			}
-
-			// if there is more than one term
-			// determine the index of the last operator entered
-			const lastOpIndex = rtArray.lastIndexOf(lastOp)
-			
-			if (rtArray.includes('.', lastOpIndex)) {
-				// if last term entered contains a decimal, return
+		if (lastOp === undefined) {
+			if (rtArray.includes('.')) {
+				// if there is only one term and
+				// it already contains a decimal, return
 				return
-			} else if (this.state.ops.includes(lastChar)) {
-				// if last char entered was an operator return '0.'
-				this.leadingZero()
 			} else {
-				// if last char entered was a number append the '.'
-				this.updateWithChar('.')
+				// append the decimal if the term doesn't
+				// yet contain one
+				return this.updateWithChar('.')
 			}
+		}
+
+		// if there is more than one term
+		// determine the index of the last operator entered
+		const lastOpIndex = rtArray.lastIndexOf(lastOp)
+			
+		if (rtArray.includes('.', lastOpIndex)) {
+			// if last term entered contains a decimal, return
+			return
+		} else if (this.state.ops.includes(lastChar)) {
+			// if last char entered was an operator return '0.'
+			this.leadingZero()
+		} else {
+			// if last char entered was a number append the '.'
+			this.updateWithChar('.')
+		}
 	}
 
 	leadingZero = () => 
@@ -481,17 +508,42 @@ class App extends Component {
 			}
 		})
 
-	concatChar = char =>
-		// concatenates the char that was entered 
-		// to display and runningTotal
-		this.setState(prevState => {
-			const { display, runningTotal } = prevState
-			return {
-				display: display + char,
-				runningTotal: runningTotal + char
-			}
-		})
+	concatChar = char => {
+		// check the number of chars
+		// currently being displayed 
+		// to see if the limit has been reached
+		const { display } = this.state
+		if (display.length > 15) {
+			// if the limit is reached, notify the
+			// user and disable input for a 
+			// short time
+			this.setState({ 
+				display: 'LIMIT EXCEEDED',
+				freeze: true
+			})
+			setTimeout(() => this.clearErrorMessage(display), 1500)
+		} else {
+			// concatenates the char that was entered 
+			// to display and runningTotal
+			this.setState(prevState => {
+				const { display, runningTotal } = prevState
+				return {
+					display: display + char,
+					runningTotal: runningTotal + char
+				}
+			})
+		}	
+	}
 
+	clearErrorMessage = prevDisplay => 
+		// re-enables user input after an error message
+		// and clears the message from the display,
+		// replacing it with the last term entered
+		this.setState({
+			display: prevDisplay,
+			freeze: false
+		})
+		
 	calculate = () => {
 		// evaluates runningTotal, sets the resulting value to display
 		// and clears the store when '=' button is pressed
@@ -515,14 +567,28 @@ class App extends Component {
 			total = parseFloat(total).toFixed(4)
 		}
 
-		const negativeState = total.includes('-') ? true : false
-		this.setState({
-			display: total,
-			store: '',
-			runningTotal: total,
-			calculateCalled: true,
-			isNegative: negativeState
-		})
+		// check to see if chars limit has been reached
+		// and if so display an error message and temporarily
+		// freeze user input
+		if(total.length > 15) {
+			const { display } = this.state
+			this.setState({ 
+				display: 'LIMIT EXCEEDED',
+				freeze: true
+			})
+			setTimeout(() => this.clearErrorMessage(display), 1500)
+		} else {
+			// if number of chars don't exceed the limit then
+			// set state to mimick the "=" button functionality
+			const negativeState = total.includes('-') ? true : false
+			this.setState({
+				display: total,
+				store: '',
+				runningTotal: total,
+				calculateCalled: true,
+				isNegative: negativeState
+			})
+		}	
 	}
 
 	refresh = char => 
