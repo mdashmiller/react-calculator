@@ -7,11 +7,11 @@ const Calculator = ({
 	store, 
 	handleClick,
 	calculate, 
-	onSubmit 
+	handleSubmit 
 }) =>
 	<div>
 		<h1>REACTulator</h1>
-		<form onSubmit={onSubmit}>
+		<form onSubmit={handleSubmit}>
 			<div className="store">
 				<span>{store}</span>
 			</div>
@@ -23,7 +23,9 @@ const Calculator = ({
 				disabled
 			/>
 			<br/>
-			<ButtonPanel handleClick={handleClick} calculate={calculate} />
+			<ButtonPanel
+				handleClick={handleClick}
+				calculate={calculate} />
 		</form>
 	</div>
 

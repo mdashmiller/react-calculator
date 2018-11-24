@@ -600,7 +600,7 @@ class App extends Component {
 			calculateCalled: false
 		})
 	
-	onSubmit = e =>
+	handleSubmit = e =>
 		// prevents page reloading
 		e.preventDefault()
 
@@ -612,7 +612,7 @@ class App extends Component {
 					store={this.state.store}
 					handleClick={this.handleClick}
 					calculate={this.calculate}
-					onSubmit={this.onSubmit}
+					handleSubmit={this.handleSubmit}
 				/>	
 			</div>
 		)
