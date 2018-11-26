@@ -1,11 +1,11 @@
 import React from 'react'
 import '../index.css'
 
-const ButtonPanel = ({ handleClick, calculate }) => 
+const ButtonPanel = ({ handleClick, handleKeyDown, calculate }) => 
 	// sends values from button to App state
-	<div className="wrapper">
+	<div className="wrapper" onKeyDown={handleKeyDown}>
 		<div className="top-row">
-			<button className="button func" onClick={ () => handleClick('ce') }>ce</button>
+			<button className="button func" onClick={ () => handleClick('ce') } autoFocus>ce</button>
 			<button className="button func" onClick={ () => handleClick('c') }>c</button>
 			<button className="button mod" onClick={ () => handleClick('+/-') }>+/-</button>
 		</div>

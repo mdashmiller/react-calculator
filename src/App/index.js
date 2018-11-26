@@ -4,6 +4,7 @@ import * as math from 'mathjs'
 import '../index.css'
 
 class App extends Component {
+	
 	state = {
 		display: '0',
 		store: '',
@@ -54,14 +55,50 @@ class App extends Component {
 		}
 	}
 
-	handleKeyPress = e => {
+	handleKeyDown = e => {
 		// allows user to utilize keyboard
 		e.preventDefault()
 
-		const btn = e.key || e.keyCode
-
-		if (btn === 'Enter' || 13) {
-			this.calculate()
+		const btn = e.key
+		switch (btn) {
+			case 'Enter':
+				this.calculate()
+				break
+			case '1':
+				this.handleClick('1')
+				break
+			case '2':
+				this.handleClick('2')
+				break
+			case '3':
+				this.handleClick('3')
+				break
+			case '4':
+				this.handleClick('4')
+				break
+			case '5':
+				this.handleClick('5')
+				break
+			case '6':
+				this.handleClick('6')
+				break
+			case '7':
+				this.handleClick('7')
+				break
+			case '8':
+				this.handleClick('8')
+				break
+			case '9':
+				this.handleClick('9')
+				break
+			case '0':
+				this.handleClick('0')
+				break
+			case 'Backspace':
+				this.handleClick('ce')
+				break
+			default:
+				return
 		}
 	}
 
@@ -623,7 +660,7 @@ class App extends Component {
 					handleClick={this.handleClick}
 					calculate={this.calculate}
 					handleSubmit={this.handleSubmit}
-					handleKeyPress={this.handleKeyPress}
+					handleKeyDown={this.handleKeyDown}
 				/>	
 			</div>
 		)
