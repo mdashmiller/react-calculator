@@ -16,7 +16,7 @@ class App extends Component {
 
 	// component methods
 
-	handleClick = e => {
+	handleClick = btn => {
 		// sets values and calls functions depending
 		// on which button is pressed
 
@@ -26,7 +26,6 @@ class App extends Component {
 		const { freeze } = this.state
 		if (freeze) return
 
-		const btn = e.target.value
 		switch (btn) {
 			case 'c':
 				this.clear()
@@ -52,6 +51,17 @@ class App extends Component {
 		  		this.state.calculateCalled
 		  			? this.refresh(btn)
 		    		: this.updateWithChar(btn)
+		}
+	}
+
+	handleKeyPress = e => {
+		// allows user to utilize keyboard
+		e.preventDefault()
+
+		const btn = e.key || e.keyCode
+
+		if (btn === 'Enter' || 13) {
+			this.calculate()
 		}
 	}
 
@@ -613,6 +623,7 @@ class App extends Component {
 					handleClick={this.handleClick}
 					calculate={this.calculate}
 					handleSubmit={this.handleSubmit}
+					handleKeyPress={this.handleKeyPress}
 				/>	
 			</div>
 		)
