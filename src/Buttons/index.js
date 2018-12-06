@@ -1,5 +1,6 @@
 import React from 'react'
 import '../index.css'
+import PropTypes from 'prop-types'
 
 const ButtonPanel = ({ handleClick, handleKeyDown, calculate }) => 
 	// sends values from button to App state
@@ -30,9 +31,15 @@ const ButtonPanel = ({ handleClick, handleKeyDown, calculate }) =>
 		<div className="button-row">
 			<button className="button number" onClick={ () => handleClick('0') }>0</button>
 			<button className="button mod" onClick={ () => handleClick('.') }>.</button>
-			<button className="button func" onClick={calculate}>=</button>
+			<button className="button func" id="calc" onClick={calculate}>=</button>
 			<button className="button op" onClick={ () => handleClick('+') }>+</button>
 		</div>
 	</div>	
+
+ButtonPanel.propTypes = {
+	handleClick: PropTypes.func.isRequired,
+	handleKeyDown: PropTypes.func.isRequired,
+	calculate: PropTypes.func.isRequired
+}
 
 export default ButtonPanel

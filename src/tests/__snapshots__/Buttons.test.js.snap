@@ -3,123 +3,143 @@
 exports[`<ButtonPanel /> has a valid snapshot 1`] = `
 <div
   className="wrapper"
+  onKeyDown={[MockFunction]}
 >
   <div
     className="top-row"
   >
-    <input
+    <button
+      autoFocus={true}
       className="button func"
-      type="button"
-      value="ce"
-    />
-    <input
+      onClick={[Function]}
+    >
+      ce
+    </button>
+    <button
       className="button func"
-      type="button"
-      value="c"
-    />
-    <input
+      onClick={[Function]}
+    >
+      c
+    </button>
+    <button
       className="button mod"
-      type="button"
-      value="+/-"
-    />
+      onClick={[Function]}
+    >
+      +/-
+    </button>
   </div>
   <div
     className="button-row"
   >
-    <input
+    <button
       className="button number"
-      type="button"
-      value="7"
-    />
-    <input
+      onClick={[Function]}
+    >
+      7
+    </button>
+    <button
       className="button number"
-      type="button"
-      value="8"
-    />
-    <input
+      onClick={[Function]}
+    >
+      8
+    </button>
+    <button
       className="button number"
-      type="button"
-      value="9"
-    />
-    <input
+      onClick={[Function]}
+    >
+      9
+    </button>
+    <button
       className="button op"
-      type="button"
-      value="/"
-    />
+      onClick={[Function]}
+    >
+      /
+    </button>
   </div>
   <div
     className="button-row"
   >
-    <input
+    <button
       className="button number"
-      type="button"
-      value="4"
-    />
-    <input
+      onClick={[Function]}
+    >
+      4
+    </button>
+    <button
       className="button number"
-      type="button"
-      value="5"
-    />
-    <input
+      onClick={[Function]}
+    >
+      5
+    </button>
+    <button
       className="button number"
-      type="button"
-      value="6"
-    />
-    <input
+      onClick={[Function]}
+    >
+      6
+    </button>
+    <button
       className="button op"
-      type="button"
-      value="x"
-    />
+      onClick={[Function]}
+    >
+      x
+    </button>
   </div>
   <div
     className="button-row"
   >
-    <input
+    <button
       className="button number"
-      type="button"
-      value="1"
-    />
-    <input
+      onClick={[Function]}
+    >
+      1
+    </button>
+    <button
       className="button number"
-      type="button"
-      value="2"
-    />
-    <input
+      onClick={[Function]}
+    >
+      2
+    </button>
+    <button
       className="button number"
-      type="button"
-      value="3"
-    />
-    <input
+      onClick={[Function]}
+    >
+      3
+    </button>
+    <button
       className="button op"
-      type="button"
-      value="-"
-    />
+      onClick={[Function]}
+    >
+      -
+    </button>
   </div>
   <div
     className="button-row"
   >
-    <input
+    <button
       className="button number"
-      type="button"
-      value="0"
-    />
-    <input
+      onClick={[Function]}
+    >
+      0
+    </button>
+    <button
       className="button mod"
-      type="button"
-      value="."
-    />
-    <input
+      onClick={[Function]}
+    >
+      .
+    </button>
+    <button
       className="button func"
       id="calc"
-      onClick={[Function]}
-      type="button"
-      value="="
-    />
-    <input
+      onClick={[MockFunction]}
+    >
+      =
+    </button>
+    <button
       className="button op"
-      type="button"
-      value="+"
-    />
+      onClick={[Function]}
+    >
+      +
+    </button>
   </div>
 </div>
 `;

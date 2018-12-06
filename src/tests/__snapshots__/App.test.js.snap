@@ -8,164 +8,162 @@ exports[`<App /> has a valid snapshot 1`] = `
     <h1>
       REACTulator
     </h1>
-    <form
-      onSubmit={[Function]}
+    <div
+      className="store"
+    >
+      <span>
+        
+      </span>
+    </div>
+    <input
+      className="display"
+      disabled={true}
+      placeholder="0"
+      type="text"
+      value="0"
+    />
+    <br />
+    <div
+      className="wrapper"
+      onKeyDown={[Function]}
     >
       <div
-        className="store"
+        className="top-row"
       >
-        <span>
-          
-        </span>
+        <button
+          autoFocus={true}
+          className="button func"
+          onClick={[Function]}
+        >
+          ce
+        </button>
+        <button
+          className="button func"
+          onClick={[Function]}
+        >
+          c
+        </button>
+        <button
+          className="button mod"
+          onClick={[Function]}
+        >
+          +/-
+        </button>
       </div>
-      <input
-        className="display"
-        disabled={true}
-        placeholder="0"
-        type="text"
-        value="0"
-      />
-      <br />
       <div
-        className="wrapper"
+        className="button-row"
       >
-        <div
-          className="top-row"
+        <button
+          className="button number"
+          onClick={[Function]}
         >
-          <input
-            className="button func"
-            onClick={[Function]}
-            type="button"
-            value="ce"
-          />
-          <input
-            className="button func"
-            onClick={[Function]}
-            type="button"
-            value="c"
-          />
-          <input
-            className="button mod"
-            onClick={[Function]}
-            type="button"
-            value="+/-"
-          />
-        </div>
-        <div
-          className="button-row"
+          7
+        </button>
+        <button
+          className="button number"
+          onClick={[Function]}
         >
-          <input
-            className="button number"
-            onClick={[Function]}
-            type="button"
-            value="7"
-          />
-          <input
-            className="button number"
-            onClick={[Function]}
-            type="button"
-            value="8"
-          />
-          <input
-            className="button number"
-            onClick={[Function]}
-            type="button"
-            value="9"
-          />
-          <input
-            className="button op"
-            onClick={[Function]}
-            type="button"
-            value="/"
-          />
-        </div>
-        <div
-          className="button-row"
+          8
+        </button>
+        <button
+          className="button number"
+          onClick={[Function]}
         >
-          <input
-            className="button number"
-            onClick={[Function]}
-            type="button"
-            value="4"
-          />
-          <input
-            className="button number"
-            onClick={[Function]}
-            type="button"
-            value="5"
-          />
-          <input
-            className="button number"
-            onClick={[Function]}
-            type="button"
-            value="6"
-          />
-          <input
-            className="button op"
-            onClick={[Function]}
-            type="button"
-            value="x"
-          />
-        </div>
-        <div
-          className="button-row"
+          9
+        </button>
+        <button
+          className="button op"
+          onClick={[Function]}
         >
-          <input
-            className="button number"
-            onClick={[Function]}
-            type="button"
-            value="1"
-          />
-          <input
-            className="button number"
-            onClick={[Function]}
-            type="button"
-            value="2"
-          />
-          <input
-            className="button number"
-            onClick={[Function]}
-            type="button"
-            value="3"
-          />
-          <input
-            className="button op"
-            onClick={[Function]}
-            type="button"
-            value="-"
-          />
-        </div>
-        <div
-          className="button-row"
-        >
-          <input
-            className="button number"
-            onClick={[Function]}
-            type="button"
-            value="0"
-          />
-          <input
-            className="button mod"
-            onClick={[Function]}
-            type="button"
-            value="."
-          />
-          <input
-            className="button func"
-            id="calc"
-            onClick={[Function]}
-            type="button"
-            value="="
-          />
-          <input
-            className="button op"
-            onClick={[Function]}
-            type="button"
-            value="+"
-          />
-        </div>
+          /
+        </button>
       </div>
-    </form>
+      <div
+        className="button-row"
+      >
+        <button
+          className="button number"
+          onClick={[Function]}
+        >
+          4
+        </button>
+        <button
+          className="button number"
+          onClick={[Function]}
+        >
+          5
+        </button>
+        <button
+          className="button number"
+          onClick={[Function]}
+        >
+          6
+        </button>
+        <button
+          className="button op"
+          onClick={[Function]}
+        >
+          x
+        </button>
+      </div>
+      <div
+        className="button-row"
+      >
+        <button
+          className="button number"
+          onClick={[Function]}
+        >
+          1
+        </button>
+        <button
+          className="button number"
+          onClick={[Function]}
+        >
+          2
+        </button>
+        <button
+          className="button number"
+          onClick={[Function]}
+        >
+          3
+        </button>
+        <button
+          className="button op"
+          onClick={[Function]}
+        >
+          -
+        </button>
+      </div>
+      <div
+        className="button-row"
+      >
+        <button
+          className="button number"
+          onClick={[Function]}
+        >
+          0
+        </button>
+        <button
+          className="button mod"
+          onClick={[Function]}
+        >
+          .
+        </button>
+        <button
+          className="button func"
+          id="calc"
+          onClick={[Function]}
+        >
+          =
+        </button>
+        <button
+          className="button op"
+          onClick={[Function]}
+        >
+          +
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 `;
