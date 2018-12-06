@@ -3,62 +3,63 @@ import ReactDOM from 'react-dom'
 import renderer from 'react-test-renderer'
 import Enzyme, { shallow } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
-import chai, { expect } from 'chai'
-import { spy } from 'sinon'
 
 import ButtonPanel from '../Buttons'
 
 Enzyme.configure({ adapter: new Adapter() })
 
-global.jestExpect = global.expect
-global.expect = chai.expect
+const props = {
+	handleClick: jest.fn(),
+	handleKeyDown: jest.fn(),
+	calculate: jest.fn()
+}
 
 describe('<ButtonPanel />', () => {
+	
+	let wrapper
+
+	beforeAll(() => {
+		wrapper = shallow(<ButtonPanel { ...props } />)
+	})
 
 	it('renders without crashing', () => {
 		const div = document.createElement('div')
-		ReactDOM.render(<ButtonPanel />, div)
+		ReactDOM.render(<ButtonPanel { ...props } />, div)
 		ReactDOM.unmountComponentAtNode(div)
 	})
 
 	it('has a valid snapshot', () => {
 		const component = renderer.create(
-			<ButtonPanel />
+			<ButtonPanel { ...props } />
 		)
 		let tree = component.toJSON()
-		jestExpect(tree).toMatchSnapshot()
+		expect(tree).toMatchSnapshot()
 	})
 
 	it('renders one top row', () => {
-		const wrapper = shallow(<ButtonPanel />)
-		expect(wrapper.find('div.top-row')).to.have.lengthOf(1)
+		expect(wrapper.find('div.top-row').length).toBe(1)
 	})
 
 	it('renders 4 button rows', () => {
-		const wrapper = shallow(<ButtonPanel />)
-		expect(wrapper.find('div.button-row')).to.have.lengthOf(4)
+		expect(wrapper.find('div.button-row').length).toBe(4)
 	})
 
 	it('renders 19 buttons', () => {
-		const wrapper = shallow(<ButtonPanel />)
-		expect(wrapper.find('.button')).to.have.lengthOf(19)
+		expect(wrapper.find('.button').length).toBe(19)
 	})
 
-	// find without using id
-	// it('calls calculate() when #calc is clicked', () => {
-	// 	const calculate = spy()
-	// 	const wrapper = shallow(<ButtonPanel calculate={calculate}/>)
-	// 	wrapper.find('input#calc').simulate('click')
-	// 	expect(calculate).to.have.property('callCount', 1)
-	// })
+	it('calls calculate() when #calc is clicked', () => {
+		wrapper.find('button#calc').simulate('click')
+
+		expect(props.calculate).toHaveBeenCalled()
+	})
 
 	it('calls handleClick() when the buttons are clicked', () => {
-		const handleClick = spy()
-		const wrapper = shallow(<ButtonPanel handleClick={handleClick} />)
 		wrapper.find('.button').not('#calc').forEach(node => {
 			node.simulate('click')
 		})
-		expect(handleClick).to.have.property('callCount', 18)
+
+		expect(props.handleClick).toHaveBeenCalledTimes(18)
 	})
 
 })

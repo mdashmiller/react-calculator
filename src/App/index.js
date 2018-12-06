@@ -647,10 +647,6 @@ class App extends Component {
 			calculateCalled: false
 		})
 	
-	handleSubmit = e =>
-		// prevents page reloading
-		e.preventDefault()
-
 	render() {
 		return (
 			<div className="app">
@@ -659,7 +655,6 @@ class App extends Component {
 					store={this.state.store}
 					handleClick={this.handleClick}
 					calculate={this.calculate}
-					handleSubmit={this.handleSubmit}
 					handleKeyDown={this.handleKeyDown}
 				/>	
 			</div>
