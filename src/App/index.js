@@ -184,9 +184,9 @@ class App extends Component {
 	updateWithOperator = operator => {
 		// handles the input of operators to runningTotal
 		// and store and updates display accordingly
-		this.setState({ calculateCalled: false })
+		this.setState({ calculateCalled: false, isNegative: false })
 
-		const lastChar = this.lastCharEntered()
+		const lastChar = this.lastCharEntered()//+
 
 		switch (lastChar) {
 			case '+':
@@ -195,7 +195,7 @@ class App extends Component {
 			case '/':
 				// if the last character entered was an operator then
 				// replace it with the new operator
-				this.swapLastOperator(operator)
+				this.swapLastOperator(operator)//-
 				break
 			default:
 				// if the last character entered was a number then
@@ -213,7 +213,7 @@ class App extends Component {
 		// store for better ux
 		const opPlusSpaces = ` ${operator} `
 
-		const newRunningTotal = this.replaceEndChars(operator, this.state.runningTotal, 1)
+		const newRunningTotal = this.replaceEndChars(operator, this.state.runningTotal, 2)
 		const newStore = this.replaceEndChars(opPlusSpaces, this.state.store, 3)
 		this.setState({
 			runningTotal : newRunningTotal,
@@ -267,10 +267,10 @@ class App extends Component {
 		} else {
 			// if total chars don't exceed the limit then set state
 			// to prepare for the next term to be entered
-			const negativeState = total.includes('-') ? true : false
+			// const negativeState = total.includes('-') ? true : false
 			this.setState({
 				runningTotal: total,
-				isNegative: negativeState
+				// isNegative: negativeState
 			})
 		}
 	}
