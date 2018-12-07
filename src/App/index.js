@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Calculator from '../components/Calculator'
+import Helper from '../functions/Helper'
 import * as math from 'mathjs'
 import '../index.css'
 
@@ -130,7 +131,8 @@ class App extends Component {
 	removeLastNumber = () => {
 		// removes the last term entered
 		const rtArrayWithSpaces = [...this.state.runningTotal]
-		const rtArray = this.removeSpaces(rtArrayWithSpaces)
+		// const rtArray = this.removeSpaces(rtArrayWithSpaces)
+		const rtArray = Helper.removeSpaces(rtArrayWithSpaces)
 		const lastOp = this.lastOperatorEntered()
 		const numOfOps = this.numOfOps()
 
@@ -162,11 +164,6 @@ class App extends Component {
 			}
 		}
 	}
-
-	removeSpaces = arr =>
-		// takes an array and returns a 
-		// new array with the spaces removed
-		arr.filter(str => /\S/.test(str))
 
 	lastCharEntered = () => {
 		// determines the last character entered by the user
