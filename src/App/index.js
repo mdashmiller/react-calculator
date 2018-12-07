@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Calculator from '../Calculator'
+import Calculator from '../components/Calculator'
 import * as math from 'mathjs'
 import '../index.css'
 

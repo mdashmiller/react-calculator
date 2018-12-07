@@ -4,8 +4,8 @@ import renderer from 'react-test-renderer'
 import Enzyme, { shallow } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 
-import Calculator from '../Calculator'
-import ButtonPanel from '../Buttons'
+import Calculator from '../components/Calculator'
+import ButtonPanel from '../components/ButtonPanel'
 
 Enzyme.configure({ adapter: new Adapter() })
 

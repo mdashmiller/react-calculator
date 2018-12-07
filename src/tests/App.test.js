@@ -5,7 +5,7 @@ import Enzyme, { shallow } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 
 import App from '../App'
-import Calculator from '../Calculator'
+import Calculator from '../components/Calculator'
 
 Enzyme.configure({ adapter: new Adapter() })
 

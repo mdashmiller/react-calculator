@@ -1,5 +1,5 @@
 import React from 'react'
-import '../index.css'
+// import '../index.css'
 import PropTypes from 'prop-types'
 
 const ButtonPanel = ({ handleClick, handleKeyDown, calculate }) => 
