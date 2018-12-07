@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Calculator from '../Calculator'
+import Calculator from '../components/Calculator'
 import * as math from 'mathjs'
 import '../index.css'
 
@@ -129,39 +129,66 @@ class App extends Component {
 
 	removeLastNumber = () => {
 		// removes the last term entered
-		const rtArray = [...this.state.runningTotal]		
+		const rtArrayWithSpaces = [...this.state.runningTotal]
+		const rtArray = this.removeSpaces(rtArrayWithSpaces)
 		const lastOp = this.lastOperatorEntered()
+		const numOfOps = this.numOfOps()
 
 		if (lastOp === undefined) {
 			// if no operator has been entered yet
 			// runningTotal will be set back to '0'
 			return '0'
+		} else if (numOfOps === 1 && lastOp === '-') {
+			// if the only operator entered is the '-' sign
+			// of a negative number then runningTotal
+			// will be set back to '0'
+			return '0'
 		} else {
 			// removes any digits from runningTotal that
 			// are after the last operator entered
 			const lastOpIndex = rtArray.lastIndexOf(lastOp)
-
 			// check if last term entered was a
 			// negative number
-			if (this.state.ops.includes(rtArray[lastOpIndex - 2])) {
+			if (this.state.ops.includes(rtArray[lastOpIndex - 1])) {
 				// if the last term is a negative number
-				// an additional 2 chars need to be removed
+				// an additional char needs to be removed
 				return rtArray.filter((item, index) =>
-					index <= lastOpIndex -2 
+					index <= lastOpIndex - 1 
 				).join('')
 			} else {
-				return rtArray.filter((item, index) => 
+				return rtArray.filter((item, index) =>
 					index <= lastOpIndex	
 				).join('')
 			}
 		}
 	}
 
+	removeSpaces = arr =>
+		// takes an array and returns a 
+		// new array with the spaces removed
+		arr.filter(str => /\S/.test(str))
+
 	lastCharEntered = () => {
 		// determines the last character entered by the user
 		const rtArray = [...this.state.runningTotal]
 		const rtLength = rtArray.length
 		return rtArray[rtLength - 1]
+	}
+
+	lastOperatorEntered = () => {
+		// determines the last operator entered by the user
+		const rtArray = [...this.state.runningTotal]
+		return rtArray.filter(item => 
+			this.state.ops.includes(item)									 
+		).pop()
+	}
+
+	numOfOps = () => {
+		// determines the number of operators
+		// in runningTotal
+		const { runningTotal } = this.state
+		const opsArr = this.getOperators(runningTotal)
+		return opsArr.length
 	}
 
 	getOperators = str => {
@@ -171,14 +198,6 @@ class App extends Component {
 		return array.filter(item => 
 			this.state.ops.includes(item)									 
 		)
-	}
-
-	lastOperatorEntered = () => {
-		// determines the last operator entered by the user
-		const rtArray = [...this.state.runningTotal]
-		return rtArray.filter(item => 
-			this.state.ops.includes(item)									 
-		).pop()
 	}
 
 	updateWithOperator = operator => {
@@ -648,6 +667,7 @@ class App extends Component {
 		})
 	
 	render() {
+		console.log(`runningTotal: ${this.state.runningTotal}`)
 		return (
 			<div className="app">
 				<Calculator 

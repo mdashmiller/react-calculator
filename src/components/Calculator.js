@@ -1,6 +1,5 @@
 import React from 'react'
-import ButtonPanel from '../Buttons'
-import '../index.css'
+import ButtonPanel from './ButtonPanel'
 import PropTypes from 'prop-types'
 
 const Calculator = ({
