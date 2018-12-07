@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Calculator from '../components/Calculator'
-import Helper from '../functions/Helper'
+import Utils from '../functions/Utils'
 import * as math from 'mathjs'
 import '../index.css'
 
@@ -117,8 +117,9 @@ class App extends Component {
 	undoLastInput = () => {
 		// resets display and last term
 		// of runningTotal to '0'
-		if (this.state.runningTotal !== '0') {
-			const newRunningTotal = this.removeLastNumber() 
+		const { runningTotal } = this.state
+		if (runningTotal !== '0') {
+			const newRunningTotal = Utils.removeLastNumber(runningTotal) 
 			this.setState({
 				display: '0' ,
 				runningTotal: newRunningTotal,
@@ -128,81 +129,13 @@ class App extends Component {
 		}
 	}
 
-	removeLastNumber = () => {
-		// removes the last term entered
-		const rtArrayWithSpaces = [...this.state.runningTotal]
-		// const rtArray = this.removeSpaces(rtArrayWithSpaces)
-		const rtArray = Helper.removeSpaces(rtArrayWithSpaces)
-		const lastOp = this.lastOperatorEntered()
-		const numOfOps = this.numOfOps()
-
-		if (lastOp === undefined) {
-			// if no operator has been entered yet
-			// runningTotal will be set back to '0'
-			return '0'
-		} else if (numOfOps === 1 && lastOp === '-') {
-			// if the only operator entered is the '-' sign
-			// of a negative number then runningTotal
-			// will be set back to '0'
-			return '0'
-		} else {
-			// removes any digits from runningTotal that
-			// are after the last operator entered
-			const lastOpIndex = rtArray.lastIndexOf(lastOp)
-			// check if last term entered was a
-			// negative number
-			if (this.state.ops.includes(rtArray[lastOpIndex - 1])) {
-				// if the last term is a negative number
-				// an additional char needs to be removed
-				return rtArray.filter((item, index) =>
-					index <= lastOpIndex - 1 
-				).join('')
-			} else {
-				return rtArray.filter((item, index) =>
-					index <= lastOpIndex	
-				).join('')
-			}
-		}
-	}
-
-	lastCharEntered = () => {
-		// determines the last character entered by the user
-		const rtArray = [...this.state.runningTotal]
-		const rtLength = rtArray.length
-		return rtArray[rtLength - 1]
-	}
-
-	lastOperatorEntered = () => {
-		// determines the last operator entered by the user
-		const rtArray = [...this.state.runningTotal]
-		return rtArray.filter(item => 
-			this.state.ops.includes(item)									 
-		).pop()
-	}
-
-	numOfOps = () => {
-		// determines the number of operators
-		// in runningTotal
-		const { runningTotal } = this.state
-		const opsArr = this.getOperators(runningTotal)
-		return opsArr.length
-	}
-
-	getOperators = str => {
-		// takes a string and returns an array 
-		// of all the operators it includes
-		const array = [...str]
-		return array.filter(item => 
-			this.state.ops.includes(item)									 
-		)
-	}
-
 	updateWithOperator = operator => {
 		// handles the input of operators to runningTotal
 		// and store and updates display accordingly
 		this.setState({ calculateCalled: false, isNegative: false })
 
-		const lastChar = this.lastCharEntered()//+
+		const { runningTotal } = this.state
+		const lastChar = Utils.lastItem([...runningTotal])
 
 		switch (lastChar) {
 			case '+':
@@ -225,35 +158,19 @@ class App extends Component {
 		// swaps the last char on store and runningTotal for
 		// a new operator char
 
+		const { runningTotal, store } = this.state
 		// spaces are added around operators in
 		// store for better ux
 		const opPlusSpaces = ` ${operator} `
 
-		const newRunningTotal = this.replaceEndChars(operator, this.state.runningTotal, 2)
-		const newStore = this.replaceEndChars(opPlusSpaces, this.state.store, 3)
+		const newRunningTotal = Utils.replaceEndChars(operator, runningTotal, 1)
+		const newStore = Utils.replaceEndChars(opPlusSpaces, store, 3)
 		this.setState({
 			runningTotal : newRunningTotal,
 			store : newStore
 		})
 	}
-
-	replaceEndChars = (chars, str, num) => {
-		// swaps a specified number of chars
-		// from the end of a string with others
-		const prunedArray = this.removeEndChars(str, num)
-		prunedArray.push(chars)
-		return prunedArray.join('')
-	}
-
-	removeEndChars = (str, num) => {
-		// returns an array with the specified
-		// number of end chars removed
-		const array = [...str]
-		const length = array.length
-		return array.filter((item, index) =>
-			index <= length - num)
-	}
-
+	
 	calcRunningTotal = () => {
 		// each time an operator is entered after a number 
 		// runningTotal is evaluated
@@ -261,7 +178,7 @@ class App extends Component {
 		// 'x' chars in runningTotal need to be
 		// converted to '*' chars for math.eval()
 		// to work properly
-		const toEvaluate = this.convertX(this.state.runningTotal)
+		const toEvaluate = Utils.convertX(this.state.runningTotal)
 
 		let total = math.eval(toEvaluate).toString()
 
@@ -289,13 +206,6 @@ class App extends Component {
 				// isNegative: negativeState
 			})
 		}
-	}
-
-	convertX = (str) => {
-		// replaces all 'x' chars in a string
-		// with '*' chars
-		const x = /[x]/g
-		return str.replace(x, '*')
 	}
 
 	chainOperations = operator => {
@@ -446,8 +356,8 @@ class App extends Component {
 		// determines when to add decimals to
 		// display and runningTotal
 		const rtArray = [...this.state.runningTotal]
-		const lastChar = this.lastCharEntered()
-		const lastOp = this.lastOperatorEntered()
+		const lastChar = Utils.lastItem(rtArray)
+		const lastOp = Utils.lastOperator(rtArray)
 
 		if (lastOp === undefined) {
 			if (rtArray.includes('.')) {
@@ -490,9 +400,10 @@ class App extends Component {
 
 	plusMinus = () => {
 		// handles the '+/-' button
-		const lastChar = this.lastCharEntered()
+		const { runningTotal } = this.state
+		const lastChar = Utils.lastItem([...runningTotal])
 		
-		if (this.state.runningTotal === '0' || this.state.ops.includes(lastChar)) {
+		if (runningTotal === '0' || this.state.ops.includes(lastChar)) {
 			// if nothing has yet been entered return
 			return
 		} else {
@@ -538,8 +449,9 @@ class App extends Component {
 			}
 		})
 
-		const lastChar = this.lastCharEntered()
-		if (this.state.ops.includes(lastChar) || this.state.runningTotal === '0') {
+		const { runningTotal } = this.state
+		const lastChar = Utils.lastItem([...runningTotal])
+		if (this.state.ops.includes(lastChar) || runningTotal === '0') {
 			// if last character entered was an operator or nothing has yet
 			// been entered and the '.' is pressed, retain the leading 
 			// zero in display and append the '.' to runningTotal
@@ -610,14 +522,15 @@ class App extends Component {
 	calculate = () => {
 		// evaluates runningTotal, sets the resulting value to display
 		// and clears the store when '=' button is pressed
+		const { runningTotal, display } = this.state
 
 		// replace all 'x' chars with '*' chars for
 		// math.eval() to work properly
-		const rtToEvaluate = this.convertX(this.state.runningTotal)
-		const displayToEvaluate = this.convertX(this.state.display)
+		const rtToEvaluate = Utils.convertX(runningTotal)
+		const displayToEvaluate = Utils.convertX(display)
 
 		let total
-		const lastChar = this.lastCharEntered()
+		const lastChar = Utils.lastItem([...runningTotal])
 
 		if (this.state.ops.includes(lastChar)) {
 			total = math.eval(rtToEvaluate + displayToEvaluate).toString()
@@ -634,7 +547,6 @@ class App extends Component {
 		// and if so display an error message and temporarily
 		// freeze user input
 		if(total.length > 15) {
-			const { display } = this.state
 			this.setState({ 
 				display: 'LIMIT EXCEEDED',
 				freeze: true
