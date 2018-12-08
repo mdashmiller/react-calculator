@@ -141,7 +141,7 @@ class App extends Component {
 		// evaluation string with the operator or to append
 		// the operator to the end of the evaluation string
 		const { runningTotal } = this.state
-		const lastChar = Utils.lastItem([...runningTotal])
+		const lastChar = Utils.lastItem([...runningTotal], false)
 		const isOperator = Utils.opOrNot(lastChar)
 
 		if (isOperator) {
@@ -225,7 +225,7 @@ class App extends Component {
 		// determines when to add decimals to
 		// display and runningTotal
 		const rtArray = [...this.state.runningTotal]
-		const lastChar = Utils.lastItem(rtArray)
+		const lastChar = Utils.lastItem(rtArray, false)
 		const lastOp = Utils.lastOperator(rtArray)
 
 		if (lastOp === undefined) {
@@ -273,7 +273,7 @@ class App extends Component {
 		})
 
 		const { runningTotal } = this.state
-		const lastChar = Utils.lastItem([...runningTotal])
+		const lastChar = Utils.lastItem([...runningTotal], false)
 		if (this.state.ops.includes(lastChar) || runningTotal === '0') {
 			// if last character entered was an operator or nothing has yet
 			// been entered and the '.' is pressed, retain the leading 
@@ -346,16 +346,46 @@ class App extends Component {
 
 	plusMinus = () => {
 		// handles the '+/-' button
-		const { runningTotal } = this.state
-		const lastChar = Utils.lastItem([...runningTotal])
+		const { runningTotal } = this.state // '6/.5'
+		const lastChar = Utils.lastItem([...runningTotal], false) // 5
 		
 		if (runningTotal === '0' || this.state.ops.includes(lastChar)) {
 			// if nothing has yet been entered return
 			return
 		} else {
-			this.negateNum()
+			this.negateNum(runningTotal)
 		}
 	}
+
+	// negateNum = str =>
+	// 	this.setState(prevState => {
+	// 		const { store, display, isNegative} = prevState
+
+	// 		// const lastOp = Utils.lastOperator([...str])
+	// 		// const lastOpIndex = str.lastIndexOf(lastOp)
+			
+			
+	// 		const prevOp = this.state.ops.includes(Utils.lastItem([...store], true))
+	// 			? Utils.lastItem([...store], true)
+	// 			: ''
+
+	// 		if (isNegative) {
+	// 			const posDisplay = display.replace('-', '')
+	// 			const lastNeg = str.lastIndexOf('-')
+	// 			const runningTotal = str.remove('-', lastNeg)
+	// 			return {
+	// 				display: posDisplay,
+	// 				runningTotal: `${runningTotal}${prevOp}${posDisplay}`,
+	// 				isNegative: !isNegative
+	// 			}
+	// 		} else {
+	// 			return {
+	// 				display: '-' + display,
+	// 				runningTotal: `${runningTotal}${prevOp}-${display}`,
+	// 				isNegative: !isNegative
+	// 			}
+	// 		}
+	// 	}
 	
 	negateNum = () =>
 		// adds or removes '-' char in
@@ -363,17 +393,29 @@ class App extends Component {
 		this.setState(prevState => {
 			const { store, display, isNegative} = prevState
 
+			// store the final operator entered by the user if there is one
+			// so it can be tacked back on later
+			const prevOp = this.state.ops.includes(Utils.lastItem([...store], true))
+				? Utils.lastItem([...store], true)
+				: ''
+
+			// remove spaces from store and its last operator if there is one
+			// and then evaluate it in order to use it to keep runningTotal
+			// correct when changing the sign of the term in display
+			const storeToEval = Eval.prepForEval(store)
+			const storeTotal = !store ? store : Eval.runningTotal(storeToEval)
+
 			if (isNegative) {
 				const posDisplay = display.replace('-', '')
 				return {
 					display: posDisplay,
-					runningTotal: `${store}${posDisplay}`,
+					runningTotal: `${storeTotal}${prevOp}${posDisplay}`,
 					isNegative: !isNegative
 				}
 			} else {
 				return {
 					display: '-' + display,
-					runningTotal: `${store}-${display}`,
+					runningTotal: `${storeTotal}${prevOp}-${display}`,
 					isNegative: !isNegative
 				}
 			}
@@ -427,6 +469,7 @@ class App extends Component {
 		})
 	
 	render() {
+		console.log(`runningTotal: ${this.state.runningTotal}`)
 		return (
 			<div className="app">
 				<Calculator 

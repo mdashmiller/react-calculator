@@ -13,9 +13,14 @@ const Utils = {
 		// new array with the spaces removed
 		arr.filter(str => /\S/.test(str)),
 
-	lastItem: arr =>
+	lastItem: function (arr, spaces) {
 		// returns the last item in an array
-		arr[arr.length - 1],
+		if (arguments[1]) {
+			const spaceless = this.removeSpaces(arr)
+			return this.lastItem(spaceless, false)
+		}
+		return arr[arr.length - 1]
+	},
 
 	getOperators: arr =>
 		// returns an array of all the operator
