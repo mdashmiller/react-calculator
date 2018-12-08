@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Calculator from '../components/Calculator'
 import Utils from '../functions/Utils'
-import * as math from 'mathjs'
+import Eval from '../functions/Eval'
 import '../index.css'
 
 class App extends Component {
@@ -132,25 +132,27 @@ class App extends Component {
 	updateWithOperator = operator => {
 		// handles the input of operators to runningTotal
 		// and store and updates display accordingly
+
+		// reset calculateCalled and isNegative each
+		// time an operator is entered
 		this.setState({ calculateCalled: false, isNegative: false })
 
+		// determine whether to swap the last char of the
+		// evaluation string with the operator or to append
+		// the operator to the end of the evaluation string
 		const { runningTotal } = this.state
 		const lastChar = Utils.lastItem([...runningTotal])
+		const isOperator = Utils.opOrNot(lastChar)
 
-		switch (lastChar) {
-			case '+':
-			case '-':
-			case 'x':
-			case '/':
-				// if the last character entered was an operator then
-				// replace it with the new operator
-				this.swapLastOperator(operator)//-
-				break
-			default:
-				// if the last character entered was a number then
-				// append the operator to runningTotal and store
-				this.calcRunningTotal()
-				this.chainOperations(operator)		
+		if (isOperator) {
+			// if the last character entered was an operator then
+			// replace it with the new operator
+			this.swapLastOperator(operator)
+		} else {
+			// if the last character entered was a number then
+			// append the operator to runningTotal and store
+			this.calcRunningTotal()
+			this.chainOperations(operator)
 		}
 	}
 
@@ -162,9 +164,9 @@ class App extends Component {
 		// spaces are added around operators in
 		// store for better ux
 		const opPlusSpaces = ` ${operator} `
-
 		const newRunningTotal = Utils.replaceEndChars(operator, runningTotal, 1)
 		const newStore = Utils.replaceEndChars(opPlusSpaces, store, 3)
+
 		this.setState({
 			runningTotal : newRunningTotal,
 			store : newStore
@@ -174,24 +176,13 @@ class App extends Component {
 	calcRunningTotal = () => {
 		// each time an operator is entered after a number 
 		// runningTotal is evaluated
+		const { runningTotal, display } = this.state
+		const total = Eval.runningTotal(runningTotal)
 
-		// 'x' chars in runningTotal need to be
-		// converted to '*' chars for math.eval()
-		// to work properly
-		const toEvaluate = Utils.convertX(this.state.runningTotal)
-
-		let total = math.eval(toEvaluate).toString()
-
-		// round total to max of 4 decimal places
-		if (total.includes('.') && (total.length - total.indexOf('.')) > 5) {
-			total = parseFloat(total).toFixed(4)
-		}
-
-		// check to see if chars limit has been reached
-		// and if so display an error message and temporarily
+		// check to see if chars limit has been reached and
+		// if so display an error message and temporarily
 		// freeze user input
 		if(total.length > 15) {
-			const { display } = this.state
 			this.setState({ 
 				display: 'LIMIT EXCEEDED',
 				freeze: true
@@ -200,10 +191,8 @@ class App extends Component {
 		} else {
 			// if total chars don't exceed the limit then set state
 			// to prepare for the next term to be entered
-			// const negativeState = total.includes('-') ? true : false
 			this.setState({
 				runningTotal: total,
-				// isNegative: negativeState
 			})
 		}
 	}
@@ -222,19 +211,7 @@ class App extends Component {
 			// message to the store
 			if (display === 'LIMIT EXCEEDED') return
 
-			const tempStore = store + display + ` ${operator} `
-			let newStore
-
-			// checking to see if any
-			// negative numbers have been entered
-			if (tempStore.indexOf('- -') !== -1  
-				|| tempStore.indexOf('+ -') !== -1 
-				|| tempStore.indexOf('x -') !== -1 
-				|| tempStore.indexOf('/ -') !== -1) {
-				newStore = this.handleParens(tempStore)
-			} else {
-				newStore = tempStore
-			}
+			const newStore = Utils.charStrCombiner(operator, store, display)
 
 			return {
 				store: newStore,
@@ -243,114 +220,6 @@ class App extends Component {
 			}
 		})
 	}
-
-	handleParens = tempStore => {
-		// when a negaive number is entered it
-		// will be encapsulated in parentheses
-		const openParens = this.addOpenParens(tempStore)
-		
-		const openParensArr = [...openParens]
-		const beginCheckLocations = []
-
-		// finds each location to begin checking for
-		// where to insert a closing parenthesis
-		openParensArr.forEach((item, index) => {
-			if (item === '(') {
-				beginCheckLocations.push(index + 4)
-			}						 
-		})
-
-		const storePrefix = this.createStorePrefix(beginCheckLocations, openParens)
-
-		return this.createCheckStrings(beginCheckLocations, openParens, storePrefix)
-	}
-
-	addOpenParens = tempStore => {
-		// returns a string with an opening parenthesis in
-		// front of each negative number
-		const dblNeg = /- -/g
-		const plusNeg = /\+ -/g
-		const timesNeg = /\x -/g
-		const divNeg = /\/ -/g
-		const endParen = /\)/g
-
-		// remove any pre-existing closing parentheses
-		// to avoid double parentheses later
-		const baseString = tempStore.replace(endParen, '')
-
-		// insert opening parentheses where needed
-		let openParens = baseString.replace(dblNeg, '- (-')
-		openParens = openParens.replace(plusNeg, '+ (-')
-		openParens = openParens.replace(timesNeg, 'x (-')
-		return openParens.replace(divNeg, '/ (-')
-	}
-
-	createStorePrefix = (locations, tempStore) => {
-		// removes and saves the portion of 
-		// the string that occurs before the first
-		// possible location of a closing parenthesis
-		const cutoff = locations[0]
-		const tempStoreArr = [...tempStore]
-		return tempStoreArr.filter((item, index) =>
-			index < cutoff												
-		).join('')
-	}
-
-	createCheckStrings = (locations, openParens, storePrefix) => {
-		// creates an array of substrings so that
-		// each can be checked for the proper
-		// location of a closing parenthesis
-		let checkStr
-		const checkStrings = []
-
-		for (let i = 0; i < locations.length; i++) {
-			checkStr = openParens.substring(locations[i], locations[i + 1])
-			checkStrings.push(checkStr)
-		}
-
-		return this.findCloseParensLocs(checkStrings, locations, storePrefix)
-	}
-
-	findCloseParensLocs = (checkStrings, locations, storePrefix) => {
-		// finds the index position in each checkString
-		// where a closing parenthesis needs
-		// to be inserted
-		const closeParensLocations = []
-		
-		checkStrings.forEach(substr => {
-			for (let i = 0; i < substr.length; i++) {
-				if (this.state.ops.includes(substr[i])) {
-					closeParensLocations.push(substr.indexOf(substr[i]))
-					return
-				}
-			}
-		})
-
-		return this.insertCloseParens(closeParensLocations, checkStrings, storePrefix)
-	}
-
-	insertCloseParens = (locations, substrings, storePrefix) => {
-		// takes each substring and inserts
-		// the closing parenthesis then adds
-		// it to an array 
-		let counter = 0
-		const newSubStrings = []
-		
-		substrings.forEach(substr => {
-			let substrArray = [...substr]
-			substrArray.splice(locations[counter], 0, ') ')
-			counter++
-			newSubStrings.push(substrArray.join(''))
-		})
-
-		return this.createStoreWithParens(storePrefix, newSubStrings.join(''))
-	}
-
-	createStoreWithParens = (storePrefix, storeEnd) =>
-		// concatenates the string with all the parentheses
-		// now added to the end of the previously
-		// removed portion of the original string
-		storePrefix + storeEnd
 
 	handleDecimal = () => {
 		// determines when to add decimals to
@@ -386,52 +255,6 @@ class App extends Component {
 			this.updateWithChar('.')
 		}
 	}
-
-	leadingZero = () => 
-		// begins new decimal terms after
-		// an operator with a leading '0' 
-		this.setState(prevState => {
-			const { runningTotal } = prevState
-			return {
-				display: '0.',
-				runningTotal: runningTotal + '.'
-			}
-		})
-
-	plusMinus = () => {
-		// handles the '+/-' button
-		const { runningTotal } = this.state
-		const lastChar = Utils.lastItem([...runningTotal])
-		
-		if (runningTotal === '0' || this.state.ops.includes(lastChar)) {
-			// if nothing has yet been entered return
-			return
-		} else {
-			this.negateNum()
-		}
-	}
-	
-	negateNum = () =>
-		// adds or removes '-' char in
-		// display and runningTotal
-		this.setState(prevState => {
-			const { store, display, isNegative} = prevState
-
-			if (isNegative) {
-				const posDisplay = display.replace('-', '')
-				return {
-					display: posDisplay,
-					runningTotal: `${store}${posDisplay}`,
-					isNegative: !isNegative
-				}
-			} else {
-				return {
-					display: '-' + display,
-					runningTotal: `${store}-${display}`,
-					isNegative: !isNegative
-				}
-			}
-		})
 
 	updateWithChar = char => {
 		// determines how to add new characters
@@ -510,6 +333,52 @@ class App extends Component {
 		}	
 	}
 
+	leadingZero = () => 
+		// begins new decimal terms after
+		// an operator with a leading '0' 
+		this.setState(prevState => {
+			const { runningTotal } = prevState
+			return {
+				display: '0.',
+				runningTotal: runningTotal + '.'
+			}
+		})
+
+	plusMinus = () => {
+		// handles the '+/-' button
+		const { runningTotal } = this.state
+		const lastChar = Utils.lastItem([...runningTotal])
+		
+		if (runningTotal === '0' || this.state.ops.includes(lastChar)) {
+			// if nothing has yet been entered return
+			return
+		} else {
+			this.negateNum()
+		}
+	}
+	
+	negateNum = () =>
+		// adds or removes '-' char in
+		// display and runningTotal
+		this.setState(prevState => {
+			const { store, display, isNegative} = prevState
+
+			if (isNegative) {
+				const posDisplay = display.replace('-', '')
+				return {
+					display: posDisplay,
+					runningTotal: `${store}${posDisplay}`,
+					isNegative: !isNegative
+				}
+			} else {
+				return {
+					display: '-' + display,
+					runningTotal: `${store}-${display}`,
+					isNegative: !isNegative
+				}
+			}
+		})
+	
 	clearErrorMessage = prevDisplay => 
 		// re-enables user input after an error message
 		// and clears the message from the display,
@@ -523,28 +392,10 @@ class App extends Component {
 		// evaluates runningTotal, sets the resulting value to display
 		// and clears the store when '=' button is pressed
 		const { runningTotal, display } = this.state
+		const total = Eval.calculate(runningTotal, display)
 
-		// replace all 'x' chars with '*' chars for
-		// math.eval() to work properly
-		const rtToEvaluate = Utils.convertX(runningTotal)
-		const displayToEvaluate = Utils.convertX(display)
-
-		let total
-		const lastChar = Utils.lastItem([...runningTotal])
-
-		if (this.state.ops.includes(lastChar)) {
-			total = math.eval(rtToEvaluate + displayToEvaluate).toString()
-		} else {
-			total = math.eval(rtToEvaluate).toString()
-		}
-		
-		// rounds total to maximum of four decimal places
-		if (total.includes('.') && (total.length - total.indexOf('.')) > 5) {
-			total = parseFloat(total).toFixed(4)
-		}
-
-		// check to see if chars limit has been reached
-		// and if so display an error message and temporarily
+		// check to see if chars limit has been reached and
+		// if so display an error message and temporarily
 		// freeze user input
 		if(total.length > 15) {
 			this.setState({ 
@@ -576,7 +427,6 @@ class App extends Component {
 		})
 	
 	render() {
-		console.log(`runningTotal: ${this.state.runningTotal}`)
 		return (
 			<div className="app">
 				<Calculator 

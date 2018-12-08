@@ -1,3 +1,5 @@
+import PosNeg from './PosNeg'
+
 const ops = ['+', '-', 'x', '/']
 
 const Utils = {
@@ -81,6 +83,45 @@ const Utils = {
 				).join('')
 			}
 		}
+	},
+
+	opOrNot: char => {
+		// determines whether or not the char it
+		// receives is an operator
+		let isOperator
+
+		switch (char) {
+			case '+':
+			case '-':
+			case 'x':
+			case '/':
+				isOperator = true
+				break
+			default:
+				isOperator = false
+		}
+		return isOperator
+	},
+
+	charStrCombiner: (char, str1, str2) => {
+		// takes two strings and a char, concatenates
+		// them in a readable way, and encapsulates
+		// any negative terms in parentheses
+		const tempStr = str1 + str2 + ` ${char} `
+		let newStr
+
+		// checking to see if any
+		// negative numbers have been entered
+		if (tempStr.indexOf('- -') !== -1  
+			|| tempStr.indexOf('+ -') !== -1 
+			|| tempStr.indexOf('x -') !== -1 
+			|| tempStr.indexOf('/ -') !== -1) {
+			newStr = PosNeg.handleParens(tempStr)
+		} else {
+			newStr = tempStr
+		}
+
+		return newStr
 	}
 
 }
