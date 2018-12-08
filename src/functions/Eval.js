@@ -49,6 +49,16 @@ const Eval = {
 		}
 
 		return total
+	},
+
+	prepForEval: str => {
+		// takes a string and removes the final
+		// char if it is an operator
+		const spaceless = Utils.removeSpaces([...str])
+		const lastChar = Utils.lastItem(spaceless)
+		return ops.includes(lastChar)
+				?  Utils.removeEndChars(spaceless.join(''), 1).join('')
+				:  str
 	}
 
 }
