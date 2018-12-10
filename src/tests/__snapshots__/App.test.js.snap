@@ -24,7 +24,7 @@ exports[`<App /> has a valid snapshot 1`] = `
     />
     <br />
     <div
-      className="wrapper"
+      className="btn-frame"
       onKeyDown={[Function]}
     >
       <div

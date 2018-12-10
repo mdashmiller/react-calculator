@@ -62,4 +62,10 @@ describe('<ButtonPanel />', () => {
 		expect(props.handleClick).toHaveBeenCalledTimes(18)
 	})
 
+	it('calls handleKeyDown() with keypress event', () => {
+		wrapper.find('div.btn-frame').simulate('keyDown')
+
+		expect(props.handleKeyDown).toHaveBeenCalled()
+	})
+
 })

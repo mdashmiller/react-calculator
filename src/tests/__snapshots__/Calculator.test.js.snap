@@ -21,7 +21,7 @@ exports[`<Calculator /> has a valid snapshot 1`] = `
   />
   <br />
   <div
-    className="wrapper"
+    className="btn-frame"
     onKeyDown={[MockFunction]}
   >
     <div

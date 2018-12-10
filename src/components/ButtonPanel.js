@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 const ButtonPanel = ({ handleClick, handleKeyDown, calculate }) => 
 	// sends values from button to App state
-	<div className="wrapper" onKeyDown={handleKeyDown}>
+	<div className="btn-frame" onKeyDown={handleKeyDown}>
 		<div className="top-row">
 			<button className="button func" onClick={ () => handleClick('ce') } autoFocus>ce</button>
 			<button className="button func" onClick={ () => handleClick('c') }>c</button>

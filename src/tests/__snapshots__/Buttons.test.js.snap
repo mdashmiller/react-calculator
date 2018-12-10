@@ -2,7 +2,7 @@
 
 exports[`<ButtonPanel /> has a valid snapshot 1`] = `
 <div
-  className="wrapper"
+  className="btn-frame"
   onKeyDown={[MockFunction]}
 >
   <div
