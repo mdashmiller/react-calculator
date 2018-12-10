@@ -8,7 +8,6 @@ const PosNeg = {
 		// takes a string and encapsulates all
 		// its negative terms in parentheses
 		const openParens = this.addOpenParens(str)
-		
 		const openParensArr = [...openParens]
 		const beginCheckLocations = []
 
@@ -50,6 +49,7 @@ const PosNeg = {
 		// the string that occurs before the first
 		// possible location of a closing parenthesis
 		const cutoff = locationsArr[0]
+		
 		return [...str].filter((item, index) => index < cutoff)
 			.join('')
 	},
@@ -130,7 +130,7 @@ const PosNeg = {
 		if (lastNeg === '-1') return
 
 		strArr.splice(lastNeg, 1)
-	
+
 		return strArr.join('')
 	}	
 

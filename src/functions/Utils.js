@@ -17,8 +17,10 @@ const Utils = {
 		// returns the last item in an array
 		if (arguments[1]) {
 			const spaceless = this.removeSpaces(arr)
+			
 			return this.lastItem(spaceless, false)
 		}
+
 		return arr[arr.length - 1]
 	},
 
@@ -42,6 +44,7 @@ const Utils = {
 		// takes a string and returns an array with
 		// the specified number of end chars removed
 		const cutOff = [...str].length - num
+
 		return [...str].filter((item, index) => index < cutOff)
 	},
 
@@ -50,7 +53,9 @@ const Utils = {
 		// the specified number of chars removed
 		// from the end and the given char propended
 		const prunedArray = this.removeEndChars(str, num)
+
 		prunedArray.push(char)
+
 		return prunedArray.join('')
 	},
 	
