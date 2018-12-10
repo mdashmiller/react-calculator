@@ -30,14 +30,14 @@ const Eval = {
 		// math.eval() to work properly
 		const rtToEvaluate = Utils.convertX(runningTotalStr)
 		const displayToEvaluate = Utils.convertX(displayStr)
-		let total
-
-		// if the last char in runningTotal is an operator then
-		// the term in the display needs to be concatenated
-		// to runningTotal before the string is evaluated
 		const lastChar = Utils.lastItem([...runningTotalStr])
+
+		let total
 		
 		if (ops.includes(lastChar)) {
+			// if the last char in runningTotal is an operator then
+			// the term in the display needs to be concatenated
+			// to runningTotal before the string is evaluated
 			total = math.eval(rtToEvaluate + displayToEvaluate).toString()
 		} else {
 			total = math.eval(rtToEvaluate).toString()
@@ -56,9 +56,10 @@ const Eval = {
 		// char if it is an operator
 		const spaceless = Utils.removeSpaces([...str])
 		const lastChar = Utils.lastItem(spaceless)
+
 		return ops.includes(lastChar)
-				?  Utils.removeEndChars(spaceless.join(''), 1).join('')
-				:  str
+			?  Utils.removeEndChars(spaceless.join(''), 1).join('')
+			:  str
 	}
 
 }
