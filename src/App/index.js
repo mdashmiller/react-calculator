@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Calculator from '../components/Calculator'
 import Utils from '../functions/Utils'
 import Eval from '../functions/Eval'
+import PosNeg from '../functions/PosNeg'
 import '../index.css'
 
 class App extends Component {
@@ -357,65 +358,32 @@ class App extends Component {
 		}
 	}
 
-	// negateNum = str =>
-	// 	this.setState(prevState => {
-	// 		const { store, display, isNegative} = prevState
-
-	// 		// const lastOp = Utils.lastOperator([...str])
-	// 		// const lastOpIndex = str.lastIndexOf(lastOp)
-			
-			
-	// 		const prevOp = this.state.ops.includes(Utils.lastItem([...store], true))
-	// 			? Utils.lastItem([...store], true)
-	// 			: ''
-
-	// 		if (isNegative) {
-	// 			const posDisplay = display.replace('-', '')
-	// 			const lastNeg = str.lastIndexOf('-')
-	// 			const runningTotal = str.remove('-', lastNeg)
-	// 			return {
-	// 				display: posDisplay,
-	// 				runningTotal: `${runningTotal}${prevOp}${posDisplay}`,
-	// 				isNegative: !isNegative
-	// 			}
-	// 		} else {
-	// 			return {
-	// 				display: '-' + display,
-	// 				runningTotal: `${runningTotal}${prevOp}-${display}`,
-	// 				isNegative: !isNegative
-	// 			}
-	// 		}
-	// 	}
-	
-	negateNum = () =>
-		// adds or removes '-' char in
-		// display and runningTotal
+	negateNum = str =>
 		this.setState(prevState => {
-			const { store, display, isNegative} = prevState
-
-			// store the final operator entered by the user if there is one
-			// so it can be tacked back on later
-			const prevOp = this.state.ops.includes(Utils.lastItem([...store], true))
-				? Utils.lastItem([...store], true)
-				: ''
-
-			// remove spaces from store and its last operator if there is one
-			// and then evaluate it in order to use it to keep runningTotal
-			// correct when changing the sign of the term in display
-			const storeToEval = Eval.prepForEval(store)
-			const storeTotal = !store ? store : Eval.runningTotal(storeToEval)
+			const { display, isNegative} = prevState
 
 			if (isNegative) {
+				// if the term that has focus is negative
+				// then make it positive in the display
+				// and in runningTotal
 				const posDisplay = display.replace('-', '')
+				const newStr = PosNeg.removeNegativeSign(str)
+				
 				return {
 					display: posDisplay,
-					runningTotal: `${storeTotal}${prevOp}${posDisplay}`,
+					runningTotal: newStr,
 					isNegative: !isNegative
 				}
+
 			} else {
+				// if the term that has focus is positive
+				// then make it negative in the display
+				// and in runningTotal
+				const newRt = PosNeg.addNegativeSign(str)
+
 				return {
 					display: '-' + display,
-					runningTotal: `${storeTotal}${prevOp}-${display}`,
+					runningTotal: newRt,
 					isNegative: !isNegative
 				}
 			}

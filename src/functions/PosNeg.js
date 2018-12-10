@@ -1,3 +1,5 @@
+import Utils from './Utils'
+
 const ops = ['+', '-', 'x', '/']
 
 const PosNeg = {
@@ -105,7 +107,32 @@ const PosNeg = {
 		// concatenates the string with all the parentheses
 		// now added to the end of the previously
 		// removed portion of the original string
-		storePrefixStr + storeEndStr
+		storePrefixStr + storeEndStr,
+
+	addNegativeSign: str => {
+		// takes a string and adds a negative
+		// sign before its last term
+		const strArr = [...str]
+		const lastOp = Utils.lastOperator([...str])
+		const lastOpIndex = str.lastIndexOf(lastOp)
+
+		strArr.splice(lastOpIndex + 1, 0, '-')
+
+		return strArr.join('')
+	},
+
+	removeNegativeSign: str => {
+		// takes a string and removes the
+		// last negative sign
+		const strArr = [...str]
+		const lastNeg = str.lastIndexOf('-')
+
+		if (lastNeg === '-1') return
+
+		strArr.splice(lastNeg, 1)
+	
+		return strArr.join('')
+	}	
 
 }
 
