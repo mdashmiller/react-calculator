@@ -35,7 +35,9 @@ const PosNeg = {
 
 		// remove any pre-existing closing parentheses
 		// to avoid double parentheses later
-		const baseString = str.replace(endParen, '')
+		const baseString = str.indexOf(')') !== -1
+			? str.replace(endParen, '')
+			: str
 
 		// insert opening parentheses where needed
 		let openParens = baseString.replace(dblNeg, '- (-')
