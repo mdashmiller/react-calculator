@@ -695,3 +695,153 @@ describe('directly invoking leadingZero()', () => {
 
 })
 
+describe('directly invoking plusMinus()', () => {
+
+	it('does nothing if the last char is an operator or user has yet to enter any terms', () => {
+		const wrapper = shallow(<App />)
+		const instance = wrapper.instance()
+		jest.spyOn(instance, 'plusMinus')
+
+		// last char is an operator
+		wrapper.setState({ runningTotal: '1+' })
+
+		instance.plusMinus()
+
+		expect(instance.state.runningTotal).toBe('1+')
+		expect(instance.plusMinus).toHaveReturnedTimes(1)
+
+		// no chars have been entered yet
+		wrapper.setState({ runningTotal: '0' })
+
+		instance.plusMinus()
+
+		expect(instance.state.runningTotal).toBe('0')
+		expect(instance.plusMinus).toHaveReturnedTimes(2)
+	})
+
+	it('calls negateNum() if there is a char to negate', () => {
+		const wrapper = shallow(<App />)
+		const instance = wrapper.instance()
+		wrapper.setState({ runningTotal: '1' })
+		jest.spyOn(instance, 'negateNum')
+
+		instance.plusMinus()
+
+		expect(instance.state.runningTotal).toBe('-1')
+		expect(instance.negateNum).toHaveBeenCalledWith('1')
+	})
+
+})
+
+describe('directly invoking negateNum()', () => {
+
+	it('makes the term with focus positive if it is negative', () => {
+		const wrapper = shallow(<App />)
+		const instance = wrapper.instance()
+		wrapper.setState({
+			display: '-1',
+			runningTotal: '2+-1',
+			isNegative: true
+		})
+
+		instance.negateNum('2+-1')
+
+		expect(instance.state.display).toBe('1')
+		expect(instance.state.runningTotal).toBe('2+1')
+		expect(instance.state.isNegative).toBe(false)
+	})
+
+	it('makes the term with focus negative if it is positive', () => {
+		const wrapper = shallow(<App />)
+		const instance = wrapper.instance()
+		wrapper.setState({
+			display: '1',
+			runningTotal: '2+1',
+			isNegative: false
+		})
+
+		instance.negateNum('2+1')
+
+		expect(instance.state.display).toBe('-1')
+		expect(instance.state.runningTotal).toBe('2+-1')
+		expect(instance.state.isNegative).toBe(true)
+	})
+
+})
+
+describe('directly invoking calculate()', () => {
+
+	it('calls limitReached() if the calculated total will exceed 15 chars', () => {
+		const wrapper = shallow(<App />)
+		const instance = wrapper.instance()
+		wrapper.setState({
+			display: '1',
+			runningTotal: '999999999999999+1'
+		})
+		jest.spyOn(instance, 'limitReached')
+
+		instance.calculate()
+
+		expect(instance.state.display).toBe('LIMIT EXCEEDED')
+		expect(instance.limitReached).toHaveBeenCalledWith('1')
+	})
+
+	it('sets state to mimick the functionality of the "=" button on a calculator', () => {
+		const wrapper = shallow(<App />)
+		const instance = wrapper.instance()
+		// invoking calculate() to produce a negative total
+		wrapper.setState({
+			display: '20',
+			store: '5 - ',
+			runningTotal: '5-20',
+			calculateCalled: false,
+			isNegative: false
+		})
+
+		instance.calculate()
+
+		expect(instance.state.display).toBe('-15')
+		expect(instance.state.store).toBe('')
+		expect(instance.state.runningTotal).toBe('-15')
+		expect(instance.state.calculateCalled).toBe(true)
+		expect(instance.state.isNegative).toBe(true)
+
+		// invoking calculate() to produce a positive total
+		wrapper.setState({
+			display: '20',
+			store: '5 + ',
+			runningTotal: '5+20',
+			calculateCalled: false,
+			isNegative: false
+		})
+
+		instance.calculate()
+
+		expect(instance.state.display).toBe('25')
+		expect(instance.state.store).toBe('')
+		expect(instance.state.runningTotal).toBe('25')
+		expect(instance.state.calculateCalled).toBe(true)
+		expect(instance.state.isNegative).toBe(false)
+	})
+
+})
+
+describe('directly invoking refresh()', () => {
+
+	it('begins a new calculation chain when a number or decimal is entered after calculate() has been called', () => {
+		const wrapper = shallow(<App />)
+		const instance = wrapper.instance()
+		wrapper.setState({
+			display: '3',
+			runningTotal: '3',
+			calculateCalled: true
+		})
+
+		instance.refresh('1')
+
+		expect(instance.state.display).toBe('1')
+		expect(instance.state.runningTotal).toBe('1')
+		expect(instance.state.calculateCalled).toBe(false)
+	})
+
+})

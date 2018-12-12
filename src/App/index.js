@@ -452,8 +452,8 @@ class App extends Component {
 		})
 	
 	render() {
-		console.log(`runningTotal: ${this.state.runningTotal}`)
-		console.log(`store: ${this.state.store}`)
+		// console.log(`runningTotal: ${this.state.runningTotal}`)
+		// console.log(`store: ${this.state.store}`)
 		return (
 			<div className="app">
 				<Calculator 
