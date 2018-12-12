@@ -112,7 +112,7 @@ class App extends Component {
 	clear = () =>
 		// resets calculator to initial state
 		this.setState({
-			display: '0' ,
+			display: '0',
 			store: '',
 			runningTotal: '0',
 			calculateCalled: false,
@@ -129,7 +129,7 @@ class App extends Component {
 			const newRunningTotal = Utils.removeLastNumber(runningTotal) 
 
 			this.setState({
-				display: '0' ,
+				display: '0',
 				runningTotal: newRunningTotal,
 				calculateCalled: false,
 				isNegative: false
@@ -196,8 +196,8 @@ class App extends Component {
 		const newStore = Utils.replaceEndChars(opPlusSpaces, store, 3)
 
 		this.setState({
-			runningTotal : newRunningTotal,
-			store : newStore
+			runningTotal: newRunningTotal,
+			store: newStore
 		})
 	}
 	
@@ -452,6 +452,8 @@ class App extends Component {
 		})
 	
 	render() {
+		console.log(`runningTotal: ${this.state.runningTotal}`)
+		console.log(`store: ${this.state.store}`)
 		return (
 			<div className="app">
 				<Calculator 
