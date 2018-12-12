@@ -13,16 +13,10 @@ const Utils = {
 		// new array with the spaces removed
 		arr.filter(str => /\S/.test(str)),
 
-	lastItem: function (arr, spaces) {
-		// returns the last item in an array
-		if (arguments[1]) {
-			const spaceless = this.removeSpaces(arr)
-			
-			return this.lastItem(spaceless, false)
-		}
-
-		return arr[arr.length - 1]
-	},
+	lastItem: arr =>
+		// returns the last item in an array without
+		// changing the given array
+		arr[arr.length - 1],
 
 	getOperators: arr =>
 		// returns an array of all the operator
@@ -30,7 +24,7 @@ const Utils = {
 		arr.filter(item => ops.includes(item)),
 
 	numOfOps: function (arr) {
-		// determines the number of operators
+		// determines the number of operator
 		// chars in an array
 		return this.getOperators(arr).length
 	},
@@ -51,7 +45,7 @@ const Utils = {
 	replaceEndChars: function (char, str, num) {
 		// takes string and returns another with
 		// the specified number of chars removed
-		// from the end and the given char propended
+		// from the end and the given char appended
 		const prunedArray = this.removeEndChars(str, num)
 
 		prunedArray.push(char)
@@ -117,7 +111,7 @@ const Utils = {
 		// takes two strings and a char, concatenates
 		// them in a readable way, and encapsulates
 		// any negative terms in parentheses
-		const tempStr = str1 + str2 + ` ${char} `
+		const tempStr = str1 + str2 + ` ${char} `// '1 + -2 +'
 		let newStr
 
 		// checking to see if any
