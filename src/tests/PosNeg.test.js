@@ -1,5 +1,25 @@
 import PosNeg from '../functions/PosNeg'
 
+describe('addOpenParens()', () => {
+
+	it('adds a "(" char before any negative term', () => {
+		const test = PosNeg.addOpenParens('1 + -2 +')
+
+		expect(test).toBe('1 + (-2 +')
+	})
+
+})
+
+describe('createStorePrefix()', () => {
+
+	it('returns the portion of a string that occurs before the first possible location of a closing parenthesis', () => {
+		const test = PosNeg.createStorePrefix([8], '1 + (-2 +')
+
+		expect(test).toBe('1 + (-2 ')
+	})
+
+})
+
 describe('PosNeg.addNegativeSign()', () => {
 
 	it('adds a negative sign before the last term of a string', () => {

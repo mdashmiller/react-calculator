@@ -107,15 +107,15 @@ const Utils = {
 		return isOperator
 	},
 
-	charStrCombiner: (char, str1, str2) => {
+	charStrCombiner: (char, str1, str2) => { // '+'  // '1 + ' // '-2'
 		// takes two strings and a char, concatenates
 		// them in a readable way, and encapsulates
 		// any negative terms in parentheses
-		const tempStr = str1 + str2 + ` ${char} `// '1 + -2 +'
+		const tempStr = str1 + str2 + ` ${char} ` // '1 + -2 +'
 		let newStr
 
-		// checking to see if any
-		// negative numbers have been entered
+		// checking to see if any negative
+		// numbers have been entered
 		if (tempStr.indexOf('- -') !== -1  
 			|| tempStr.indexOf('+ -') !== -1 
 			|| tempStr.indexOf('x -') !== -1 
