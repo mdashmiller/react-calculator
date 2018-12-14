@@ -1,7 +1,5 @@
 import Utils from './Utils'
 
-const ops = ['+', '-', 'x', '/']
-
 const PosNeg = {
 
 	handleParens: function (str) {
@@ -9,10 +7,9 @@ const PosNeg = {
 		// its negative terms in parentheses
 		const openParensStr = this.addOpenParens(str)
 		const openParensArr = [...openParensStr]
-		const beginCheckLocations = this.findCheckLocations(openParensArr)
-		const storePrefix = this.createStorePrefix(beginCheckLocations, openParensStr)
+		const endParenLocations = this.findEndParenLocations(openParensArr)
 
-		return this.createCheckStrings(beginCheckLocations, openParensStr, storePrefix)
+		return this.addEndParens(openParensArr, endParenLocations)
 	},
 
 	addOpenParens: str => {
@@ -25,7 +22,7 @@ const PosNeg = {
 		const endParen = /\)/g
 
 		// remove any pre-existing closing parentheses
-		// to avoid double parentheses later
+		// to avoid double end parentheses later
 		const baseString = str.indexOf(')') !== -1 
 			? str.replace(endParen, '')
 			: str
@@ -37,16 +34,15 @@ const PosNeg = {
 		return openParens.replace(divNeg, '/ (-')
 	},
 
-	findCheckLocations: arr => {
-		// find the index of each location from which
-		// to begin looking for the location to 
+	findEndParenLocations: arr => {
+		// find the index of each location to 
 		// insert a closing parenthesis
-		const beginCheckLocations = []
+		const endParenLocations = []
 
 		let negSignIndex
 		let subArray
 		let nextOpInSubArray
-		let beginCheckLoc
+		let endParenLoc
 
 		arr.forEach((item, index) => {
 			if (item === '(') {
@@ -59,82 +55,36 @@ const PosNeg = {
 				// identify the next operator that comes after the
 				// '-' of each negative term
 				nextOpInSubArray = Utils.firstOperator(subArray)
-				// create a check location one index position before 
+				// create an end parenthesis location one index position before 
 				// the operator that directly follows the '-' of
 				// each negative term
-				beginCheckLoc = arr.indexOf(nextOpInSubArray, negSignIndex + 1) - 1
-				beginCheckLocations.push(beginCheckLoc)
+				endParenLoc = arr.indexOf(nextOpInSubArray, negSignIndex + 1) - 1
+				endParenLocations.push(endParenLoc)
 			}						 
 		})
 
-		return beginCheckLocations
+		return endParenLocations
 	},
 
-	createStorePrefix: (locationsArr, str) => {
-		// removes and saves the portion of 
-		// the string that occurs before the first
-		// possible location of a closing parenthesis
-		const cutoff = locationsArr[0]
-		
-		return [...str].filter((item, index) => index < cutoff)
-			.join('')
-	},
+	addEndParens: (openParensArr, locationsArr) => {
+		// adds a ')' char at each appropriate location and
+		// returns a string with all the parentheses in place
 
-	createCheckStrings: function (locationsArr, openParensStr, storePrefixStr) {
-		// creates an array of substrings so that
-		// each can be checked for the proper
-		// location of a closing parenthesis
-		let checkStr
-		const checkStrings = []
-
-		for (let i = 0; i < locationsArr.length; i++) {
-			// start at locationsArr[i] + 1 to remove the now-superfluous
-			// space after the last operator in each substring
-			checkStr = openParensStr.substring(locationsArr[i] + 1, locationsArr[i + 1])
-			checkStrings.push(checkStr)
-		}
-
-		return this.findCloseParensLocs(checkStrings, locationsArr, storePrefixStr)
-	},
-
-	findCloseParensLocs: function (checkStringsArr, locationsArr, storePrefixStr) {
-		// finds the index position in each checkString where 
-		// a closing parenthesis needs to be inserted
-		const closeParensLocations = []
-		
-		checkStringsArr.forEach(substr => {
-			for (let i = 0; i < substr.length; i++) {
-				if (ops.includes(substr[i])) {
-					closeParensLocations.push(i)
-					return
-				}
-			}
-		})
-
-		return this.insertCloseParens(closeParensLocations, checkStringsArr, storePrefixStr)
-	},
-
-	insertCloseParens: function (locationsArr, substringsArr, storePrefixStr) {
-		// takes each substring and inserts the closing
-		// parenthesis then adds it to an array
+		// the array will +1 in length each time a ')'
+		// is added -- counter tracks this
 		let counter = 0
-		const newSubStrings = []
-		
-		substringsArr.forEach(substr => {
-			let substrArray = [...substr]
-			substrArray.splice(locationsArr[counter], 0, ') ')
-			counter++
-			newSubStrings.push(substrArray.join(''))
+
+		locationsArr.forEach(location => {
+			openParensArr.forEach((item, index) => {
+				if (location === index) {
+					openParensArr.splice(location + counter, 0, ')')
+					counter ++
+				}
+			})
 		})
 
-		return this.createStoreWithParens(storePrefixStr, newSubStrings.join(''))
+		return openParensArr.join('')
 	},
-
-	createStoreWithParens: (storePrefixStr, storeEndStr) =>
-		// concatenates the string with all the parentheses
-		// now added to the end of the previously
-		// removed portion of the original string
-		storePrefixStr + storeEndStr,
 
 	addNegativeSign: str => {
 		// takes a string and adds a negative
