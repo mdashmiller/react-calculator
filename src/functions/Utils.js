@@ -34,6 +34,17 @@ const Utils = {
 		return this.getOperators(arr).pop()
 	},
 
+	firstOperator: function (arr) {
+		// returns the first operator char in an array	
+		return this.getOperators(arr)[0]
+	},
+		
+	// firstOpLocation: function (arr) {
+	// 	// returns the index of the first
+	// 	// operator char in an array
+	// 	return arr.indexOf(this.firstOperator(arr))
+	// },
+			
 	removeEndChars: (str, num) => {
 		// takes a string and returns an array with
 		// the specified number of end chars removed
@@ -120,7 +131,7 @@ const Utils = {
 			|| tempStr.indexOf('+ -') !== -1 
 			|| tempStr.indexOf('x -') !== -1 
 			|| tempStr.indexOf('/ -') !== -1) {
-			newStr = PosNeg.handleParens(tempStr)
+			newStr = PosNeg.handleParens(tempStr) 
 		} else {
 			newStr = tempStr
 		}
