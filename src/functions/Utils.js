@@ -39,12 +39,6 @@ const Utils = {
 		return this.getOperators(arr)[0]
 	},
 		
-	// firstOpLocation: function (arr) {
-	// 	// returns the index of the first
-	// 	// operator char in an array
-	// 	return arr.indexOf(this.firstOperator(arr))
-	// },
-			
 	removeEndChars: (str, num) => {
 		// takes a string and returns an array with
 		// the specified number of end chars removed
@@ -118,11 +112,11 @@ const Utils = {
 		return isOperator
 	},
 
-	charStrCombiner: (char, str1, str2) => { // '+'  // '1 + ' // '-2'
+	charStrCombiner: (char, str1, str2) => {
 		// takes two strings and a char, concatenates
 		// them in a readable way, and encapsulates
 		// any negative terms in parentheses
-		const tempStr = str1 + str2 + ` ${char} ` // '1 + -2 +'
+		const tempStr = str1 + str2 + ` ${char} `
 		let newStr
 
 		// checking to see if any negative

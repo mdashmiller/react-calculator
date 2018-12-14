@@ -53,10 +53,20 @@ describe('numOfOps()', () => {
 
 describe('lastOperator()', () => {
 
-	it('returns the last operator char in an array	', () => {
+	it('returns the last operator char in an array', () => {
 		const test = Utils.lastOperator(['1', '+', '2', 'x', '-', '3', '/', '1'])
 
 		expect(test).toBe('/')
+	})
+
+})
+
+describe('firstOperator()', () => {
+
+	it('returns the first operator char in an array', () => {
+		const test = Utils.firstOperator(['1', '+', '2', 'x', '-', '3', '/', '1'])
+
+		expect(test).toBe('+')
 	})
 
 })
@@ -132,7 +142,7 @@ describe('charStrCombiner()', () => {
 	it('adds parentheses if there are any negative terms', () => {
 		const test = Utils.charStrCombiner('-', '1 + 2 + ', '-3')
 
-		expect(test).toBe('1 + 2 + (-3 ) - ')
+		expect(test).toBe('1 + 2 + (-3) - ')
 	})
 
 })

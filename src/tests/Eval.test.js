@@ -1,6 +1,6 @@
 import Eval from '../functions/Eval'
 
-describe('Eval.runningTotal()', () => {
+describe('runningTotal()', () => {
 
 	it('evaluates the string it receives', () => {
 		const addTest = Eval.runningTotal('1+2')
@@ -24,7 +24,7 @@ describe('Eval.runningTotal()', () => {
 
 })
 
-describe('Eval.calculate()', () => {
+describe('calculate()', () => {
 
 	it('concantenates the 2 strings it receives before eval() if the 1st string ends in an operator char', () => {
 		const addTest = Eval.calculate('1+', '1')
@@ -64,7 +64,7 @@ describe('Eval.calculate()', () => {
 
 })
 
-describe('Eval.prepForEval()', () => {
+describe('prepForEval()', () => {
 
 	it('removes the last char from a string if it is an operator', () => {
 		const test1 = Eval.prepForEval('1+2')
