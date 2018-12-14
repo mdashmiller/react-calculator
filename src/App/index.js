@@ -235,7 +235,7 @@ class App extends Component {
 			// message to the store
 			if (display === 'LIMIT EXCEEDED') return
 
-			const newStore = Utils.charStrCombiner(operator, store, display)// '+'  // '1 + ' // '-2'
+			const newStore = Utils.charStrCombiner(operator, store, display)
 
 			return {
 				store: newStore,
@@ -452,7 +452,6 @@ class App extends Component {
 		})
 	
 	render() {
-		// console.log(`runningTotal: ${this.state.runningTotal}`)
 		return (
 			<div className="app">
 				<Calculator 
