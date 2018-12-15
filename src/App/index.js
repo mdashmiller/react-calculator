@@ -461,35 +461,6 @@ class App extends Component {
 		}	
 	}
 
-	// calculate = () => {
-	// 	// evaluates runningTotal, sets the resulting value to display
-	// 	// and clears the store when '=' button is pressed
-	// 	const { runningTotal, display } = this.state
-	// 	const total = Eval.calculate(runningTotal, display)
-		
-	// 	if(total.length > 15) {
-	// 		// check to see if chars limit has been reached and
-	// 		// if so display an error message and temporarily
-	// 		// freeze user input
-	// 		this.limitReached(display)
-	// 	} else {
-	// 		// if number of chars don't exceed the limit then
-	// 		// set state to mimick the "=" button functionality
-
-	// 		// check if the evaluation of runningTotal and 
-	// 		// display yields a positive or negative term
-	// 		const negativeState = total.includes('-') ? true : false
-
-	// 		this.setState({
-	// 			display: total,
-	// 			store: '',
-	// 			runningTotal: total,
-	// 			calculateCalled: true,
-	// 			isNegative: negativeState
-	// 		})
-	// 	}	
-	// }
-
 	refresh = char => 
 		// begins a new calculation chain when a number
 		// or decimal is entered after calculate() has been called
@@ -500,8 +471,6 @@ class App extends Component {
 		})
 	
 	render() {
-		console.log(`runningTotal: ${this.state.runningTotal}`)
-		console.log(`store: ${this.state.store}`)
 		return (
 			<div className="app">
 				<Calculator 
