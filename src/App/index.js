@@ -24,9 +24,8 @@ class App extends Component {
 		// sets values and calls functions depending
 		// on which button is pressed
 
-		// user input is disabled when the
-		// "digit limit exceeded" message is
-		// being displayed
+		// user input is disabled when an error
+		// message is being displayed
 		const { freeze } = this.state
 		if (freeze) return
 
@@ -137,14 +136,27 @@ class App extends Component {
 		}
 	}
 
-	limitReached = display => {
+	displayErrorMessage = (display, err) => {
 		// freezes user input for a short time
 		// and displays an error message
-		this.setState({ 
-			display: 'LIMIT EXCEEDED',
-			freeze: true
-		})
+		if (err === 'limit') {
+			this.setState({ 
+				display: 'LIMIT EXCEEDED',
+				freeze: true
+			})
+		} else {
+			// when user tries to divide by 0 remove the
+			// '0' char from the end of runningTotal so
+			// it will be ready to accept a new char
+			const newRT = Utils.removeEndChars(this.state.runningTotal, 1)
+				.join('')
 
+			this.setState({ 
+				display: 'UNDEFINED',
+				runningTotal: newRT,
+				freeze: true
+			})
+		}
 		setTimeout(() => this.clearErrorMessage(display), 1500)
 	}
 
@@ -211,7 +223,11 @@ class App extends Component {
 			// check to see if chars limit has been reached and
 			// if so display an error message and temporarily
 			// freeze user input
-			this.limitReached(display)
+			this.displayErrorMessage(display, 'limit')
+		} else if (total === 'NaN' || total === 'Infinity') {
+			// if user has divided by 0 display an error message
+			// and temporarily freeze user input
+			this.displayErrorMessage(display, 'undef')		
 		} else {
 			// if total chars don't exceed the limit then set state
 			// to prepare for the next term to be entered
@@ -231,9 +247,8 @@ class App extends Component {
 				runningTotal
 			} = prevState
 
-			// don't add the 'LIMIT EXCEEDED' error
-			// message to the store
-			if (display === 'LIMIT EXCEEDED') return
+			// don't add error messages to the store
+			if (display === 'LIMIT EXCEEDED' || display === 'UNDEFINED') return
 
 			const newStore = Utils.charStrCombiner(operator, store, display)
 
@@ -343,7 +358,7 @@ class App extends Component {
 			// if the limit is reached, notify the
 			// user and disable input for a 
 			// short time
-			this.limitReached(display)
+			this.displayErrorMessage(display, 'limit')
 		} else {
 			// concatenates the char that was entered 
 			// to display and runningTotal
@@ -423,7 +438,11 @@ class App extends Component {
 			// check to see if chars limit has been reached and
 			// if so display an error message and temporarily
 			// freeze user input
-			this.limitReached(display)
+			this.displayErrorMessage(display, 'limit')
+		} else if (total === 'NaN' || total === 'Infinity') {
+			// if user divides by 0 display an error message
+			// and temporarily freeze user input
+			this.displayErrorMessage(display, 'undef')
 		} else {
 			// if number of chars don't exceed the limit then
 			// set state to mimick the "=" button functionality
@@ -442,6 +461,35 @@ class App extends Component {
 		}	
 	}
 
+	// calculate = () => {
+	// 	// evaluates runningTotal, sets the resulting value to display
+	// 	// and clears the store when '=' button is pressed
+	// 	const { runningTotal, display } = this.state
+	// 	const total = Eval.calculate(runningTotal, display)
+		
+	// 	if(total.length > 15) {
+	// 		// check to see if chars limit has been reached and
+	// 		// if so display an error message and temporarily
+	// 		// freeze user input
+	// 		this.limitReached(display)
+	// 	} else {
+	// 		// if number of chars don't exceed the limit then
+	// 		// set state to mimick the "=" button functionality
+
+	// 		// check if the evaluation of runningTotal and 
+	// 		// display yields a positive or negative term
+	// 		const negativeState = total.includes('-') ? true : false
+
+	// 		this.setState({
+	// 			display: total,
+	// 			store: '',
+	// 			runningTotal: total,
+	// 			calculateCalled: true,
+	// 			isNegative: negativeState
+	// 		})
+	// 	}	
+	// }
+
 	refresh = char => 
 		// begins a new calculation chain when a number
 		// or decimal is entered after calculate() has been called
@@ -452,6 +500,8 @@ class App extends Component {
 		})
 	
 	render() {
+		console.log(`runningTotal: ${this.state.runningTotal}`)
+		console.log(`store: ${this.state.store}`)
 		return (
 			<div className="app">
 				<Calculator 
