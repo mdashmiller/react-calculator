@@ -300,29 +300,52 @@ describe('directly invoking undoLastInput()', () => {
 
 })
 
-describe('directly invoking limitReached()', () => {
+describe('directly invoking displayErrorMessage()', () => {
 
 	it('freezes input, displays the error message, then calls clearErrorMessage()', () => {
 		const wrapper = shallow(<App />)
 		const instance = wrapper.instance()
+
+		// test with a limit error
+		jest.useFakeTimers()
+		jest.spyOn(instance, 'clearErrorMessage')
 		wrapper.setState({
 			display: '999999999999999'
 		})
-		jest.useFakeTimers()
-		jest.spyOn(instance, 'clearErrorMessage')
 
-		instance.limitReached('999999999999999')
+		instance.displayErrorMessage('999999999999999', 'limit')
 
 		// input frozen and error message displayed
 		expect(instance.state.display).toBe('LIMIT EXCEEDED')
 		expect(instance.state.freeze).toBe(true)
 		expect(setTimeout).toHaveBeenCalledTimes(1)
 
-		jest.runOnlyPendingTimers()
+		jest.runAllTimers()
 
 		// input unfrozen and previous display restored
 		expect(instance.clearErrorMessage).toHaveBeenCalled()
 		expect(instance.state.display).toBe('999999999999999')
+		expect(instance.state.freeze).toBe(false)
+
+		// test with an undefined error
+		wrapper.setState({
+			display: '0',
+			runningTotal: '1/0'
+		})
+
+		instance.displayErrorMessage('0', 'undef')
+
+		// input frozen and error message displayed
+		expect(instance.state.display).toBe('UNDEFINED')
+		expect(instance.state.freeze).toBe(true)
+		expect(setTimeout).toHaveBeenCalledTimes(2)
+
+		jest.runAllTimers()
+
+		// input unfrozen and previous display restored
+		expect(instance.clearErrorMessage).toHaveBeenCalled()
+		expect(instance.state.display).toBe('0')
+		expect(instance.state.runningTotal).toBe('1/')
 		expect(instance.state.freeze).toBe(false)
 	})
 
@@ -412,20 +435,31 @@ describe('directly invoking swapLastOperator()', () => {
 
 describe('directly invoking calcRunningTotal()', () => {
 
-	it('evaluates runningTotal and calls limitReached() or sets state accordingly', () => {
+	it('evaluates runningTotal and calls displayErrorMessage() or sets state accordingly', () => {
 		const wrapper = shallow(<App />)
 		const instance = wrapper.instance()
 
-		// calls limitReached() if runningTotal will exceed 15 chars
+		// calls displayErrorMessage() if runningTotal will exceed 15 chars
 		wrapper.setState({ 
 			runningTotal: '999999999999999+1',
 			display: '1'
 		})
-		jest.spyOn(instance, 'limitReached')
+		jest.spyOn(instance, 'displayErrorMessage')
 
 		instance.calcRunningTotal()
 
-		expect(instance.limitReached).toHaveBeenCalledWith('1')
+		expect(instance.displayErrorMessage).toHaveBeenCalledWith('1', 'limit')
+
+		// calls displayErrorMessage() if runningTotal will be NaN or Infinity
+		wrapper.setState({ 
+			runningTotal: '1/0',
+			display: '0'
+		})
+		jest.spyOn(instance, 'displayErrorMessage')
+
+		instance.calcRunningTotal()
+
+		expect(instance.displayErrorMessage).toHaveBeenCalledWith('0', 'undef')
 
 		// sets new runningTotal in state otherwise
 		wrapper.setState({ runningTotal: '1+1' })
@@ -650,15 +684,15 @@ describe('directly invoking updateDisplay()', () => {
 
 describe('directly invoking concatChar()', () => {
 
-	it('calls limitReached if the number of chars in the display will exceed 15', () => {
+	it('calls displayErrorMessage if the number of chars in the display will exceed 15', () => {
 		const wrapper = shallow(<App />)
 		const instance = wrapper.instance()
 		wrapper.setState({ display: '1111111111111111' })
-		jest.spyOn(instance, 'limitReached')
+		jest.spyOn(instance, 'displayErrorMessage')
 
 		instance.concatChar('2')
 
-		expect(instance.limitReached).toHaveBeenCalled()
+		expect(instance.displayErrorMessage).toHaveBeenCalledWith('1111111111111111', 'limit')
 	})
 
 	it('adds the char it receives to display and runningTotal if the char limit is not exceeded', () => {
@@ -771,24 +805,41 @@ describe('directly invoking negateNum()', () => {
 
 describe('directly invoking calculate()', () => {
 
-	it('calls limitReached() if the calculated total will exceed 15 chars', () => {
-		const wrapper = shallow(<App />)
-		const instance = wrapper.instance()
+	let wrapper
+	let instance
+
+	beforeEach(() => {
+		wrapper = shallow(<App />)
+		instance = wrapper.instance()
+	})
+
+	it('calls displayErrorMessage() if the calculated total will exceed 15 chars', () => {
 		wrapper.setState({
 			display: '1',
 			runningTotal: '999999999999999+1'
 		})
-		jest.spyOn(instance, 'limitReached')
+		jest.spyOn(instance, 'displayErrorMessage')
 
 		instance.calculate()
 
 		expect(instance.state.display).toBe('LIMIT EXCEEDED')
-		expect(instance.limitReached).toHaveBeenCalledWith('1')
+		expect(instance.displayErrorMessage).toHaveBeenCalledWith('1', 'limit')
+	})
+
+	it('calls displayErrorMessage() if the calculated total will be "NaN" or "Infinity"', () => {
+		wrapper.setState({
+			display: '0',
+			runningTotal: '1/0'
+		})
+		jest.spyOn(instance, 'displayErrorMessage')
+
+		instance.calculate()
+
+		expect(instance.state.display).toBe('UNDEFINED')
+		expect(instance.displayErrorMessage).toHaveBeenCalledWith('0', 'undef')
 	})
 
 	it('sets state to mimick the functionality of the "=" button on a calculator', () => {
-		const wrapper = shallow(<App />)
-		const instance = wrapper.instance()
 		// invoking calculate() to produce a negative total
 		wrapper.setState({
 			display: '20',
